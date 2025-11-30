@@ -1,0 +1,45 @@
+body {
+  margin: 0;
+  font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  background: #f5f6fa;
+}
+
+.MuiAppBar-root {
+  background: linear-gradient(90deg, #43cea2 0%, #185a9d 100%);
+}
+
+.MuiDrawer-paper {
+  background: #fff;
+  border-right: 1px solid #e0e0e0;
+}
+
+.MuiCard-root {
+  border-radius: 18px;
+  box-shadow: 0 2px 12px rgba(67, 206, 162, 0.08);
+}
+
+.MuiButton-containedPrimary {
+  background: linear-gradient(90deg, #43cea2 0%, #185a9d 100%);
+  color: #fff;
+}
+
+.MuiTypography-h2, .MuiTypography-h4 {
+  font-family: 'Montserrat', 'Roboto', sans-serif;
+  font-weight: 700;
+}
+
+/* Custom page paddings */
+.app-main, .MuiBox-root {
+  padding-top: 24px !important;
+  padding-bottom: 24px !important;
+}
+
+/* Responsive tweaks */
+@media (max-width: 600px) {
+  .MuiDrawer-paper {
+    width: 60px !important;
+  }
+  .MuiTypography-h4 {
+    font-size: 1.5rem !important;
+  }
+}

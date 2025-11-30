@@ -1,0 +1,59 @@
+/* BLK Design System React - Core Styles */
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,700,200');
+
+body {
+  font-family: 'Montserrat', Arial, sans-serif;
+  background: #1a1a1a;
+  color: #fff;
+}
+
+.navbar {
+  background: linear-gradient(90deg, #f5365c 0%, #f56036 100%);
+  box-shadow: 0 2px 12px rgba(245, 54, 92, 0.15);
+}
+
+.navbar-brand {
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: #fff !important;
+}
+
+.navbar-nav .nav-link {
+  color: #fff !important;
+  font-weight: 500;
+  margin-right: 1rem;
+  transition: color 0.2s;
+}
+
+.navbar-nav .nav-link.active {
+  color: #fbcf33 !important;
+}
+
+.card {
+  background: #222a42;
+  border-radius: 18px;
+  box-shadow: 0 2px 12px rgba(245, 54, 92, 0.08);
+  color: #fff;
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, #f5365c 0%, #f56036 100%);
+  border: none;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(90deg, #f56036 0%, #f5365c 100%);
+}
+
+.section {
+  padding: 48px 0;
+}
+
+@media (max-width: 600px) {
+  .navbar-brand {
+    font-size: 1.1rem;
+  }
+  .section {
+    padding: 24px 0;
+  }
+}
