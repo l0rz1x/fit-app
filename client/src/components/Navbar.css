@@ -1,0 +1,171 @@
+/* Navbar Ana Kapsayıcı */
+.navbar {
+    background-color: white;
+    border-bottom: 1px solid #e5e7eb;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    height: 72px; /* Yüksekliği 64px'den 72px'e çıkardım, ferah olsun */
+    display: flex;
+    align-items: center;
+}
+
+.navbar-container {
+    width: 100%;
+    max-width: 1440px; /* Geniş ekranlarda daha fazla alana yayılması için */
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 32px; /* Kenar boşluklarını artırdım */
+    height: 100%;
+}
+
+/* SOL KISIM - LOGO */
+.navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Logo ve yazı arasını açtım */
+    height: 100%;
+}
+
+.brand-logo {
+    width: 28px; /* Logoyu bir tık büyüttüm */
+    height: 28px;
+    background-color: #10b981;
+    border-top-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.brand-name {
+    font-weight: 800; /* Daha kalın */
+    font-size: 20px; /* Yazı: 18px -> 20px oldu */
+    color: #1f2937;
+    white-space: nowrap;
+    letter-spacing: -0.5px;
+}
+
+/* ORTA KISIM - LİNKLER */
+.navbar-center {
+    display: flex;
+    gap: 48px; /* Linklerin arası: 32px -> 48px oldu (İstediğin boşluk) */
+    height: 100%;
+    align-items: center;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #4b5563;
+    font-weight: 600; /* Biraz daha dolgun font */
+    font-size: 16px; /* Yazı: 15px -> 16px oldu */
+    height: 100%;
+    display: flex;
+    align-items: center;
+    position: relative;
+    transition: color 0.2s;
+}
+
+.nav-link:hover {
+    color: #10b981;
+}
+
+.nav-link.active {
+    color: #10b981;
+    font-weight: 700;
+}
+
+/* Yeşil Çizgi */
+.nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #10b981;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+/* SAĞ KISIM */
+.navbar-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 32px; /* Arama kutusu ile ikonların arasını açtım (20px -> 32px) */
+}
+
+/* Arama Kutusu */
+.search-box {
+    display: flex;
+    align-items: center;
+    background-color: #f3f4f6;
+    padding: 10px 16px; /* İç boşluğu artırdım */
+    border-radius: 10px;
+    width: 260px; /* Genişliği biraz artırdım */
+    height: 40px;
+}
+
+.search-input {
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 15px; /* Arama yazısı büyüdü */
+    width: 100%;
+    margin-left: 10px;
+    color: #374151;
+}
+
+/* İkonlar */
+.action-items {
+    display: flex;
+    align-items: center;
+    gap: 24px; /* Zil ve Profil arasını açtım (16px -> 24px) */
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #4b5563;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: color 0.2s;
+}
+
+.icon-button:hover {
+    color: #10b981;
+}
+
+.notification-dot {
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    width: 9px;
+    height: 9px;
+    background-color: #ef4444;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+.profile-avatar {
+    width: 40px; /* Profil resmi büyüdü: 36px -> 40px */
+    height: 40px;
+    background-color: #f59e0b;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.profile-avatar:hover {
+    transform: scale(1.05);
+}

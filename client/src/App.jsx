@@ -1,18 +1,28 @@
-import React from 'react'
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
-import Home from './views/home';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import MainLayout from "./layouts/MainLayout";
 
+import Dashboard from "./pages/Dashboard";
+import Plans from "./pages/Plans";
+import Recipes from "./pages/Recipes";
+import Progress from "./pages/Progress";
+import Login from "./pages/login";
 
 function App() {
   return (
-    <div className='App'>
-      <Router>
-        <Routes>
-          <Route path='/' element={<Home />} />
-        </Routes>
-      </Router>
-    </div>
-  )
+    <BrowserRouter>
+      <Routes>
+        {/* Şimdilik tüm sayfalar layout ile, yani Navbar ile */}
+        <Route element={<MainLayout />}>
+       
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/plans" element={<Plans />} />
+          <Route path="/recipes" element={<Recipes />} />
+          <Route path="/progress" element={<Progress />} />
+          <Route path="/login" element={<Login />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
