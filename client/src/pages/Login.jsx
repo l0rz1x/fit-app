@@ -1,9 +1,8 @@
-import React, { useState} from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-
 function Login() {
-    const [username, setUsername] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const login = () => {
@@ -11,7 +10,7 @@ function Login() {
   };
   return (
     <div className="Login">
-    <h1 className="log-title">Login</h1>
+      <h1 className="log-title">Login</h1>
       <div className="loginCon">
         <label htmlFor="log_username">Username: </label>
         <input
@@ -35,7 +34,7 @@ function Login() {
         <p>Dont have an account? {<Link to="/Register">Register</Link>}</p>
       </div>
     </div>
-  )
+  );
 }
 
-export default Login
+export default Login;
