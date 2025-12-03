@@ -12,6 +12,9 @@ const PORT = process.env.DB_PORT;
 const usersRouter = require("./routes/Users");
 app.use("/auth", usersRouter);
 
+const profileRouter = require("./routes/Profile");
+app.use("/profile", profileRouter);
+
 db.sequelize.sync({ force: false }).then(() => {
   app.listen(PORT, () => {
     console.log(`server started at ${PORT}`);

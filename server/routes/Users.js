@@ -10,8 +10,10 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 router.post("/", async (req, res) => {
   const { email, password } = req.body;
-  const existing = Users.findOne({ where: { email } });
-  if (existing) return res.json("Eposta Zaten kayitli");
+  const existing = await Users.findOne({ where: { email } });
+  if (existing) {
+    return res.json("Eposta Zaten kayitli");
+  }
 
   bcrypt.hash(password, 10).then((hash) => {
     Users.create({
