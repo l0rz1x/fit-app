@@ -3,14 +3,17 @@ const app = express();
 const cors = require("cors");
 app.use(express.json());
 app.use(cors());
+require("dotenv").config();
 
 const db = require("./models");
 
-const usersRouter = require("./models/Users");
-app.use("auth", usersRouter);
+const PORT = process.env.DB_PORT;
+
+const usersRouter = require("./routes/Users");
+app.use("/auth", usersRouter);
 
 db.sequelize.sync({ force: false }).then(() => {
-  app.listen(5002, () => {
-    console.log("server started at 5002");
+  app.listen(PORT, () => {
+    console.log(`server started at ${PORT}`);
   });
 });
