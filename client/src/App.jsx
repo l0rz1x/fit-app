@@ -10,7 +10,6 @@ import WorkoutScreen from "./pages/WorkoutScreen";
 
 import "./App.css";
 
-
 function App() {
   return (
     <div className="App">
@@ -21,11 +20,8 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/loginscreen" element={<LoginScreen />} />
           <Route path="/registerscreen" element={<RegisterScreen />} />
-                    <Route path="/mealplanscreen" element={<MealPlanScreen />} />
-                                        <Route path="/workoutscreen" element={<WorkoutScreen />} />
-
-
-
+          <Route path="/mealplanscreen" element={<MealPlanScreen />} />
+          <Route path="/workoutscreen" element={<WorkoutScreen />} />
         </Routes>
       </Router>
     </div>
