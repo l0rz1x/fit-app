@@ -1,0 +1,55 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/container-queries";
+
+/* Dark mode tetikleyicisi */
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-primary: #2dcd88;
+  --color-background-light: #f6f8f7;
+  --color-background-dark: #12201a;
+  --font-display: "Lexend", sans-serif;
+}
+
+@layer base {
+  /* 1. ADIM: Renkleri Değişken Olarak Tanımla */
+  :root {
+    /* Varsayılan (Light Mode) Renkleri - KOYU YAZI */
+    --main-text-color: #111827; /* Gray-900 */
+    --muted-text-color: #4b5563; /* Gray-600 */
+    --bg-color: #f6f8f7;
+  }
+
+  /* Dark class'ı geldiğinde değişkenlerin değerini değiştir */
+  :root.dark {
+    /* Dark Mode Renkleri - AÇIK YAZI */
+    --main-text-color: #f9fafb; /* Gray-50 (Beyaz) */
+    --muted-text-color: #9ca3af; /* Gray-400 */
+    --bg-color: #12201a;
+  }
+
+  /* 2. ADIM: Body'ye uygula */
+  body {
+    background-color: var(--bg-color);
+    color: var(--main-text-color);
+    /* Renk geçişi yumuşak olsun */
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  /* 3. ADIM: HTML içindeki sınıfları EZİYORUZ (Override) */
+  /* Bu sayede HTML'de 'text-gray-900' yazsa bile bizim değişken rengimizi kullanır */
+
+  .text-gray-900,
+  .text-gray-800,
+  .text-black {
+    color: var(--main-text-color) !important;
+    transition: color 0.3s ease;
+  }
+
+  .text-gray-600,
+  .text-gray-500,
+  .text-gray-700 {
+    color: var(--muted-text-color) !important;
+    transition: color 0.3s ease;
+  }
+}

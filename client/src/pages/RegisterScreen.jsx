@@ -1,0 +1,186 @@
+import React, { useState } from "react";
+
+const RegisterScreen = () => {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+    termsAccepted: false,
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Register attempt:", formData);
+    // Kayıt işlemleri burada yapılacak (API isteği vb.)
+  };
+
+  return (
+    <div className="relative flex h-auto min-h-screen w-full flex-col font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark transition-colors duration-300 group/design-root overflow-x-hidden">
+      <div className="layout-container flex h-full grow flex-col">
+        {/* Header */}
+        <header className="flex h-16 w-full shrink-0 items-center justify-between px-6 md:px-10 lg:px-20 border-b border-border-light dark:border-border-dark lg:border-none">
+          <div className="flex items-center gap-2">
+            <span
+              className="material-symbols-outlined text-primary text-3xl"
+              style={{ fontVariationSettings: "'FILL' 1, 'wght' 500" }}
+            >
+              eco
+            </span>
+            <p className="text-lg font-bold text-text-light dark:text-text-dark">
+              Akıllı Beslenme
+            </p>
+          </div>
+          <div className="flex items-center gap-4">
+            <p className="hidden sm:block text-sm text-subtle-light dark:text-subtle-dark">
+              Already have an account?
+            </p>
+            <a
+              className="cursor-pointer rounded-lg bg-primary/10 dark:bg-primary/20 px-4 py-2 text-sm font-bold text-primary transition-colors hover:bg-primary/20 dark:hover:bg-primary/30"
+              href="login"
+            >
+              Log In
+            </a>
+          </div>
+        </header>
+
+        {/* Main Content */}
+        <main className="flex flex-1 items-center justify-center py-10 lg:py-16">
+          <div className="grid w-full max-w-6xl grid-cols-1 gap-8 px-6 md:px-10 lg:grid-cols-2 lg:gap-16">
+            {/* Left Column: Image (Desktop Only) */}
+            <div className="hidden flex-col items-center justify-center lg:flex">
+              <div className="w-full max-w-md overflow-hidden rounded-2xl shadow-xl dark:shadow-gray-900/50 rotate-[-2deg] hover:rotate-0 transition-transform duration-500">
+                <div
+                  className="aspect-square w-full bg-cover bg-center bg-no-repeat"
+                  role="img"
+                  aria-label="Healthy food flat lay"
+                  style={{
+                    backgroundImage:
+                      "url('https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=2053&auto=format&fit=crop')",
+                  }}
+                >
+                  <div className="w-full h-full bg-black/10 dark:bg-black/20"></div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Form */}
+            <div className="flex w-full flex-col justify-center">
+              <div className="mx-auto w-full max-w-md">
+                {/* Title Section */}
+                <div className="mb-8 flex flex-col gap-3 text-center lg:text-left">
+                  <p className="text-3xl font-black leading-tight tracking-[-0.033em] text-text-light dark:text-text-dark sm:text-4xl">
+                    Start Your Smart Health Journey
+                  </p>
+                  <p className="text-base font-normal leading-normal text-subtle-light dark:text-subtle-dark">
+                    Get custom meal and fitness plans designed just for you.
+                  </p>
+                </div>
+
+                <div className="relative py-4">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-border-light dark:border-border-dark"></div>
+                  </div>
+                  <div className="relative flex justify-center text-sm">
+                    <span className="bg-background-light dark:bg-background-dark px-2 text-subtle-light dark:text-subtle-dark">
+                      OR
+                    </span>
+                  </div>
+                </div>
+
+                {/* Form */}
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                  <label className="flex flex-col">
+                    <p className="pb-2 text-base font-medium leading-normal text-text-light dark:text-text-dark">
+                      Email
+                    </p>
+                    <input
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      className="form-input h-12 w-full rounded-lg border border-border-light bg-input-bg-light p-[15px] text-base text-text-light placeholder:text-subtle-light focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 dark:border-border-dark dark:bg-input-bg-dark dark:text-text-dark dark:placeholder:text-subtle-dark dark:focus:border-primary"
+                      placeholder="Enter your email address"
+                    />
+                  </label>
+
+                  <label className="flex flex-col">
+                    <p className="pb-2 text-base font-medium leading-normal text-text-light dark:text-text-dark">
+                      Password
+                    </p>
+                    <input
+                      name="password"
+                      type="password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      className="form-input h-12 w-full rounded-lg border border-border-light bg-input-bg-light p-[15px] text-base text-text-light placeholder:text-subtle-light focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 dark:border-border-dark dark:bg-input-bg-dark dark:text-text-dark dark:placeholder:text-subtle-dark dark:focus:border-primary"
+                      placeholder="Create a password"
+                    />
+                  </label>
+
+                  <label className="flex flex-col">
+                    <p className="pb-2 text-base font-medium leading-normal text-text-light dark:text-text-dark">
+                      Confirm Password
+                    </p>
+                    <input
+                      name="confirmPassword"
+                      type="password"
+                      value={formData.confirmPassword}
+                      onChange={handleInputChange}
+                      className="form-input h-12 w-full rounded-lg border border-border-light bg-input-bg-light p-[15px] text-base text-text-light placeholder:text-subtle-light focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 dark:border-border-dark dark:bg-input-bg-dark dark:text-text-dark dark:placeholder:text-subtle-dark dark:focus:border-primary"
+                      placeholder="Confirm your password"
+                    />
+                  </label>
+
+                  <div className="flex items-start gap-3 pt-2">
+                    <input
+                      id="terms-checkbox"
+                      name="termsAccepted"
+                      type="checkbox"
+                      checked={formData.termsAccepted}
+                      onChange={handleInputChange}
+                      className="mt-1 h-4 w-4 shrink-0 cursor-pointer rounded border-border-light text-primary focus:ring-primary dark:border-border-dark dark:bg-input-bg-dark"
+                    />
+                    <label
+                      className="text-sm text-subtle-light dark:text-subtle-dark select-none"
+                      htmlFor="terms-checkbox"
+                    >
+                      By signing up, you agree to our{" "}
+                      <a
+                        className="font-medium text-primary underline hover:text-green-600 transition-colors"
+                        href="#"
+                      >
+                        Terms of Service
+                      </a>{" "}
+                      and{" "}
+                      <a
+                        className="font-medium text-primary underline hover:text-green-600 transition-colors"
+                        href="#"
+                      >
+                        Privacy Policy
+                      </a>
+                      .
+                    </label>
+                  </div>
+
+                  <button className="mt-4 flex h-12 w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-primary px-5 text-base font-bold text-white shadow-md shadow-primary/20 transition-all hover:opacity-90 hover:shadow-lg active:scale-95">
+                    <span className="truncate">Create Account</span>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+};
+
+export default RegisterScreen;

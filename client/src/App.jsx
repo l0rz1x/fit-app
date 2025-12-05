@@ -1,22 +1,31 @@
-import React from 'react'
+import React from "react";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
-import Home from './pages/Home';
-import Register from './pages/Register';
-import Login from './pages/Login';
+import WelcomeScreen from "./pages/WelcomeScreen";
+import UserProfile from "./pages/UserProfile";
+import Dashboard from "./pages/Dashboard";
+import LoginScreen from "./pages/LoginScreen";
+import RegisterScreen from "./pages/RegisterScreen";
+import MealPlanScreen from "./pages/MealPlanScreen";
+import WorkoutScreen from "./pages/WorkoutScreen";
 
+import "./App.css";
 
 function App() {
   return (
-    <div className='App'>
+    <div className="App">
       <Router>
         <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/register' element={<Register />} />
-          <Route path='login' element={<Login />} />
+          <Route path="/" element={<WelcomeScreen />} />
+          <Route path="/userprofile" element={<UserProfile />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/login" element={<LoginScreen />} />
+          <Route path="/register" element={<RegisterScreen />} />
+          <Route path="/mealplanscreen" element={<MealPlanScreen />} />
+          <Route path="/workoutscreen" element={<WorkoutScreen />} />
         </Routes>
       </Router>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
