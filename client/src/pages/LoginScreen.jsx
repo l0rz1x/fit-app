@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import { useNavigate } from "react-router-dom";
+
 const LoginScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -131,7 +133,7 @@ const LoginScreen = () => {
                   Don't have an account?{" "}
                   <a
                     className="font-bold underline text-primary hover:text-orange-accent transition-colors"
-                    href="#"
+                    href="/register"
                   >
                     Sign Up
                   </a>

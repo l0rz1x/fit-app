@@ -3,7 +3,23 @@ import React, { useState, useEffect } from "react";
 // çünkü Tailwind stilleri zaten index.css'ten geliyor.
 // import "./styles/WelcomeScreen.css";
 
+// ##################################
+//!!!!!!
+// bu kısım şimdilik burda nav bar için ayrı bir component yaptığımda taşıyacağım
+//login ve signup butonlarına tıklanınca yönlendirme
+
+import { useNavigate } from "react-router-dom";
+
+// ############################################
+
 const WelcomeScreen = () => {
+  // ##################################
+  //!!!!!!
+  // bu kısım şimdilik burda nav bar için ayrı bir component yaptığımda taşıyacağım
+  //login ve signup butonlarına tıklanınca yönlendirme
+  const navigate = useNavigate();
+  // ############################################
+
   // 1. State: Tarayıcı hafızasını (localStorage) kontrol et, yoksa varsayılan 'light'
   const [theme, setTheme] = useState(() => {
     // SSR (Server Side Rendering) kontrolü ve localStorage okuma
@@ -93,7 +109,7 @@ const WelcomeScreen = () => {
                   </a>
                 </div>
                 <div className="flex gap-2 items-center">
-                  {/* --- YENİ EKLENEN TEMA BUTONU --- */}
+                  {/* --- TEMA BUTONU --- */}
                   <button
                     onClick={toggleTheme}
                     className="flex items-center justify-center size-10 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-yellow-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all mr-2"
@@ -109,11 +125,17 @@ const WelcomeScreen = () => {
                     )}
                   </button>
                   {/* -------------------------------- */}
-
-                  <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary/20 dark:bg-primary/20 text-gray-800 dark:text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/30 dark:hover:bg-primary/30 transition-colors">
+                  {/* --- GİRİŞ VE KAYIT BUTONLARI  --- */}
+                  <button
+                    onClick={() => navigate("/login")}
+                    className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary/20 dark:bg-primary/20 text-gray-800 dark:text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/30 dark:hover:bg-primary/30 transition-colors"
+                  >
                     <span className="truncate">Log In</span>
                   </button>
-                  <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-gray-900 dark:text-gray-900 text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity">
+                  <button
+                    onClick={() => navigate("/register")}
+                    className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-gray-900 dark:text-gray-900 text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity"
+                  >
                     <span className="truncate">Sign Up</span>
                   </button>
                 </div>
