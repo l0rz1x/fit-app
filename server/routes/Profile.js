@@ -5,31 +5,44 @@ const { validateToken } = require("../middlewares/authMiddleware");
 
 router.post("/", validateToken, async (req, res) => {
   const userId = req.user.id;
-  const { age, weight, height, gender, activityLevel, goal } = req.body;
+  const {
+    fullname,
+    age,
+    weight,
+    height,
+    gender,
+    activityLevel,
+    goal,
+    targetWeight,
+  } = req.body;
 
   try {
     const existing = await Profile.findOne({ where: { userId } });
 
     if (existing) {
       await existing.update({
+        fullname,
         age,
         weight,
         height,
         gender,
         activityLevel,
         goal,
+        targetWeight,
       });
       return res.json({ message: "Profile updated", profile: existing });
     }
 
     const profile = await Profile.create({
       userId,
+      fullname,
       age,
       weight,
       height,
       gender,
       activityLevel,
       goal,
+      targetWeight,
     });
 
     res.json({ message: "Profile created", profile });

@@ -5,20 +5,24 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true,
     },
+    fullname: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     age: {
       type: DataTypes.INTEGER,
       allowNull: true,
     },
-    weight: {
-      type: DataTypes.FLOAT,
+    gender: {
+      type: DataTypes.STRING,
       allowNull: true,
     },
     height: {
       type: DataTypes.FLOAT,
       allowNull: true,
     },
-    gender: {
-      type: DataTypes.STRING,
+    weight: {
+      type: DataTypes.FLOAT,
       allowNull: true,
     },
     activityLevel: {
@@ -28,6 +32,10 @@ module.exports = (sequelize, DataTypes) => {
     goal: {
       type: DataTypes.STRING,
       allowNull: true, // lose_weight, gain_weight, gain_muscle
+    },
+    targetWeight: {
+      type: DataTypes.FLOAT,
+      allowNull: true,
     },
   });
 
