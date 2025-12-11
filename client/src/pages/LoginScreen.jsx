@@ -1,13 +1,19 @@
+// client/src/pages/LoginScreen.jsx
 import React, { useState } from "react";
-
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom"; // Link'i de ekledim (sayfa yenilenmesin diye)
+import { loginUser } from "../services/api"; // 1. Servis dosyasını çağır
 
 const LoginScreen = () => {
+  const navigate = useNavigate(); // 2. Yönlendirme aracını hazırla
+
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+
+  // Hata mesajı veya yükleniyor durumu için state ekleyebiliriz (Opsiyonel ama iyi olur)
+  const [error, setError] = useState(null);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -18,16 +24,31 @@ const LoginScreen = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleSubmit = (e) => {
+  // 3. Backend Bağlantısı Olan Submit Fonksiyonu
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Login attempt:", formData);
-    // Giriş işlemleri burada yapılacak
+    setError(null); // Önceki hataları temizle
+
+    try {
+      console.log("Giriş yapılıyor...", formData);
+
+      // api.js'teki fonksiyonu çağır
+      await loginUser(formData);
+
+      console.log("Giriş Başarılı!");
+      // Başarılı olursa anasayfaya veya Profile git
+      navigate("/userprofile");
+    } catch (err) {
+      console.error("Giriş Hatası:", err);
+      // Kullanıcıya hata mesajı göster
+      setError("Giriş başarısız! E-posta veya şifre hatalı.");
+    }
   };
 
   return (
     <div className="relative flex min-h-screen w-full flex-col font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark transition-colors duration-300">
       <div className="flex h-full min-h-screen grow flex-row">
-        {/* Left Pane: Visuals (Sadece geniş ekranda görünür) */}
+        {/* Left Pane: Visuals */}
         <div className="relative hidden w-1/2 flex-col items-center justify-center bg-cover bg-center lg:flex">
           <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-yellow-accent/20 to-orange-accent/30 dark:from-primary/50 dark:via-yellow-accent/40 dark:to-orange-accent/50 backdrop-blur-[1px]"></div>
           <div
@@ -38,7 +59,6 @@ const LoginScreen = () => {
               backgroundImage:
                 "url('https://images.unsplash.com/photo-1540420773420-3366772f4999?q=80&w=2084&auto=format&fit=crop')",
             }}
-            // Not: Tasarımdaki link kırık olabilir diye Unsplash'ten uygun bir görsel koydum.
           ></div>
         </div>
 
@@ -66,9 +86,18 @@ const LoginScreen = () => {
               </p>
             </div>
 
+            {/* HATA MESAJI KUTUSU  */}
+            {error && (
+              <div
+                className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                role="alert"
+              >
+                <span className="block sm:inline">{error}</span>
+              </div>
+            )}
+
             {/* Form Inputs */}
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              {/* Email Input */}
               <label className="flex flex-col w-full">
                 <p className="text-base font-medium pb-2 text-text-light dark:text-text-dark">
                   Email or Username
@@ -88,7 +117,6 @@ const LoginScreen = () => {
                 </div>
               </label>
 
-              {/* Password Input */}
               <label className="flex flex-col w-full">
                 <p className="text-base font-medium pb-2 text-text-light dark:text-text-dark">
                   Password
@@ -116,12 +144,10 @@ const LoginScreen = () => {
                 </div>
               </label>
 
-              {/* Forgot Password Link */}
               <p className="text-sm font-normal leading-normal text-right text-subtle-light dark:text-subtle-dark underline hover:text-primary dark:hover:text-primary cursor-pointer transition-colors">
                 Forgot Password?
               </p>
 
-              {/* CTA & Sign Up Link */}
               <div className="flex flex-col gap-4 items-center mt-2">
                 <button
                   type="submit"
@@ -131,12 +157,12 @@ const LoginScreen = () => {
                 </button>
                 <p className="text-sm font-normal leading-normal text-center text-subtle-light dark:text-subtle-dark">
                   Don't have an account?{" "}
-                  <a
+                  <Link
                     className="font-bold underline text-primary hover:text-orange-accent transition-colors"
-                    href="/register"
+                    to="/register"
                   >
                     Sign Up
-                  </a>
+                  </Link>
                 </p>
               </div>
             </form>

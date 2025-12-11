@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom"; // Yönlendirme için gerekli
 
 const RegisterScreen = () => {
+  const navigate = useNavigate(); // Başarılı kayıt sonrası yönlendirme kancası
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -8,18 +11,72 @@ const RegisterScreen = () => {
     termsAccepted: false,
   });
 
+  // Kullanıcı deneyimi için durumlar
+  const [error, setError] = useState(null); // Hata mesajlarını göstermek için
+  const [isLoading, setIsLoading] = useState(false); // Yükleniyor durumu için
+
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
+    // Kullanıcı yazı yazmaya başlayınca hatayı temizle
+    if (error) setError(null);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Register attempt:", formData);
-    // Kayıt işlemleri burada yapılacak (API isteği vb.)
+    setError(null);
+
+    // 1. Temel Doğrulamalar (Frontend Validation)
+    if (!formData.email || !formData.password) {
+      setError("Lütfen tüm alanları doldurun.");
+      return;
+    }
+    if (formData.password !== formData.confirmPassword) {
+      setError("Şifreler birbiriyle eşleşmiyor.");
+      return;
+    }
+    if (!formData.termsAccepted) {
+      setError("Devam etmek için şartları kabul etmelisiniz.");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      // 2. API İsteği
+      const response = await fetch("http://localhost:5002/auth", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          // confirmPassword ve termsAccepted genellikle backende gönderilmez
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // BAŞARILI: Kullanıcıyı login sayfasına yönlendir
+        console.log("Kayıt Başarılı:", data);
+        navigate("/login");
+      } else {
+        // BAŞARISIZ: Backend'den gelen hatayı göster
+        setError(data.message || "Kayıt işlemi başarısız oldu.");
+      }
+    } catch (err) {
+      console.error("Network Error:", err);
+      setError(
+        "Sunucuya bağlanılamadı. Lütfen internet bağlantınızı veya sunucuyu kontrol edin."
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -42,12 +99,13 @@ const RegisterScreen = () => {
             <p className="hidden sm:block text-sm text-subtle-light dark:text-subtle-dark">
               Already have an account?
             </p>
-            <a
+            {/* React Router Link kullanımı */}
+            <Link
               className="cursor-pointer rounded-lg bg-primary/10 dark:bg-primary/20 px-4 py-2 text-sm font-bold text-primary transition-colors hover:bg-primary/20 dark:hover:bg-primary/30"
-              href="login"
+              to="/login"
             >
               Log In
-            </a>
+            </Link>
           </div>
         </header>
 
@@ -84,6 +142,13 @@ const RegisterScreen = () => {
                   </p>
                 </div>
 
+                {/* HATA MESAJI KUTUSU */}
+                {error && (
+                  <div className="mb-4 rounded-lg bg-red-100 border border-red-400 p-3 text-sm text-red-700 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800">
+                    {error}
+                  </div>
+                )}
+
                 <div className="relative py-4">
                   <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-border-light dark:border-border-dark"></div>
@@ -106,6 +171,7 @@ const RegisterScreen = () => {
                       type="email"
                       value={formData.email}
                       onChange={handleInputChange}
+                      required
                       className="form-input h-12 w-full rounded-lg border border-border-light bg-input-bg-light p-[15px] text-base text-text-light placeholder:text-subtle-light focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 dark:border-border-dark dark:bg-input-bg-dark dark:text-text-dark dark:placeholder:text-subtle-dark dark:focus:border-primary"
                       placeholder="Enter your email address"
                     />
@@ -120,6 +186,7 @@ const RegisterScreen = () => {
                       type="password"
                       value={formData.password}
                       onChange={handleInputChange}
+                      required
                       className="form-input h-12 w-full rounded-lg border border-border-light bg-input-bg-light p-[15px] text-base text-text-light placeholder:text-subtle-light focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 dark:border-border-dark dark:bg-input-bg-dark dark:text-text-dark dark:placeholder:text-subtle-dark dark:focus:border-primary"
                       placeholder="Create a password"
                     />
@@ -134,6 +201,7 @@ const RegisterScreen = () => {
                       type="password"
                       value={formData.confirmPassword}
                       onChange={handleInputChange}
+                      required
                       className="form-input h-12 w-full rounded-lg border border-border-light bg-input-bg-light p-[15px] text-base text-text-light placeholder:text-subtle-light focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 dark:border-border-dark dark:bg-input-bg-dark dark:text-text-dark dark:placeholder:text-subtle-dark dark:focus:border-primary"
                       placeholder="Confirm your password"
                     />
@@ -153,25 +221,30 @@ const RegisterScreen = () => {
                       htmlFor="terms-checkbox"
                     >
                       By signing up, you agree to our{" "}
-                      <a
+                      <Link
                         className="font-medium text-primary underline hover:text-green-600 transition-colors"
-                        href="#"
+                        to="/terms"
                       >
                         Terms of Service
-                      </a>{" "}
+                      </Link>{" "}
                       and{" "}
-                      <a
+                      <Link
                         className="font-medium text-primary underline hover:text-green-600 transition-colors"
-                        href="#"
+                        to="/privacy"
                       >
                         Privacy Policy
-                      </a>
+                      </Link>
                       .
                     </label>
                   </div>
 
-                  <button className="mt-4 flex h-12 w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-primary px-5 text-base font-bold text-white shadow-md shadow-primary/20 transition-all hover:opacity-90 hover:shadow-lg active:scale-95">
-                    <span className="truncate">Create Account</span>
+                  <button
+                    disabled={isLoading}
+                    className="mt-4 flex h-12 w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-primary px-5 text-base font-bold text-white shadow-md shadow-primary/20 transition-all hover:opacity-90 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <span className="truncate">
+                      {isLoading ? "Creating Account..." : "Create Account"}
+                    </span>
                   </button>
                 </form>
               </div>
