@@ -1,47 +1,60 @@
 // client/src/pages/LoginScreen.jsx
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom"; // Link'i de ekledim (sayfa yenilenmesin diye)
-import { loginUser } from "../services/api"; // 1. Servis dosyasını çağır
+import { useNavigate, Link } from "react-router-dom";
+// DİKKAT: api dosyan hangi klasördeyse oradan import et.
+// Eğer aynı klasördeyse "./api", bir üstteyse "../api"
+import { loginUser } from "../services/api";
 
 const LoginScreen = () => {
-  const navigate = useNavigate(); // 2. Yönlendirme aracını hazırla
+  const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // Yükleniyor durumu eklendi
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
-  // Hata mesajı veya yükleniyor durumu için state ekleyebiliriz (Opsiyonel ama iyi olur)
   const [error, setError] = useState(null);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    // Kullanıcı yeni bir şey yazarsa hatayı temizle
+    if (error) setError(null);
   };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  // 3. Backend Bağlantısı Olan Submit Fonksiyonu
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null); // Önceki hataları temizle
+    setError(null);
+    setIsLoading(true);
 
     try {
-      console.log("Giriş yapılıyor...", formData);
-
-      // api.js'teki fonksiyonu çağır
+      // 1. Backend'e istek at
+      // api.js içindeki loginUser fonksiyonu token'ı localStorage'a kaydediyor.
       await loginUser(formData);
 
-      console.log("Giriş Başarılı!");
-      // Başarılı olursa anasayfaya veya Profile git
-      navigate("/userprofile");
+      // 2. Token Kontrolü (Çifte Dikiş)
+      // api.js kaydetti mi diye bakıyoruz.
+      const token = localStorage.getItem("userToken");
+
+      if (token) {
+        console.log("Giriş Başarılı, Yönlendiriliyor...");
+        // UserProfile.jsx sayfasının route adı neyse tam olarak onu yaz:
+        navigate("/userprofile");
+      } else {
+        throw new Error("Giriş başarılı ancak token kaydedilemedi.");
+      }
     } catch (err) {
       console.error("Giriş Hatası:", err);
-      // Kullanıcıya hata mesajı göster
-      setError("Giriş başarısız! E-posta veya şifre hatalı.");
+      // Backend'den gelen mesajı veya genel hatayı göster
+      setError(err.message || "Giriş başarısız! E-posta veya şifre hatalı.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -86,10 +99,10 @@ const LoginScreen = () => {
               </p>
             </div>
 
-            {/* HATA MESAJI KUTUSU  */}
+            {/* HATA MESAJI KUTUSU */}
             {error && (
               <div
-                className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative text-sm font-medium"
                 role="alert"
               >
                 <span className="block sm:inline">{error}</span>
@@ -109,6 +122,7 @@ const LoginScreen = () => {
                   <input
                     name="email"
                     type="email"
+                    required
                     value={formData.email}
                     onChange={handleInputChange}
                     className="flex w-full min-w-0 flex-1 resize-none overflow-hidden text-text-light dark:text-text-dark focus:outline-none border border-l-0 border-border-light dark:border-border-dark bg-input-bg-light dark:bg-input-bg-dark h-14 placeholder:text-subtle-light dark:placeholder:text-subtle-dark p-[15px] rounded-r-lg text-base font-normal leading-normal"
@@ -128,6 +142,7 @@ const LoginScreen = () => {
                   <input
                     name="password"
                     type={showPassword ? "text" : "password"}
+                    required
                     value={formData.password}
                     onChange={handleInputChange}
                     className="flex w-full min-w-0 flex-1 resize-none overflow-hidden text-text-light dark:text-text-dark focus:outline-none border-y border-border-light dark:border-border-dark bg-input-bg-light dark:bg-input-bg-dark h-14 placeholder:text-subtle-light dark:placeholder:text-subtle-dark p-[15px] text-base font-normal leading-normal border-x-0"
@@ -151,9 +166,12 @@ const LoginScreen = () => {
               <div className="flex flex-col gap-4 items-center mt-2">
                 <button
                   type="submit"
-                  className="flex w-full min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-green-600 transition-colors shadow-lg shadow-primary/20"
+                  disabled={isLoading}
+                  className="flex w-full min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-green-600 transition-colors shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <span className="truncate">Log In</span>
+                  <span className="truncate">
+                    {isLoading ? "Logging In..." : "Log In"}
+                  </span>
                 </button>
                 <p className="text-sm font-normal leading-normal text-center text-subtle-light dark:text-subtle-dark">
                   Don't have an account?{" "}

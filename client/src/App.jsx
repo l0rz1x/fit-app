@@ -6,6 +6,7 @@ import LoginScreen from "./pages/LoginScreen";
 import RegisterScreen from "./pages/RegisterScreen";
 
 import "./App.css";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/userprofile" element={<UserProfile />} />
           <Route path="/login" element={<LoginScreen />} />
           <Route path="/register" element={<RegisterScreen />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </Router>
     </div>

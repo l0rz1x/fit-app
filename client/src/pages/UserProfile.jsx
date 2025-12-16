@@ -1,12 +1,142 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+// DİKKAT: Yeni api.js'deki fonksiyonları import ediyoruz
+import { saveUserProfile, getUserProfile } from "../services/api";
 
 export default function UserProfile() {
-  // Slider ve Input senkronizasyonu için state
-  const [targetWeight, setTargetWeight] = useState(68);
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(true); // Veri çekiliyor mu?
+
+  // --- STATE ---
+  const [formData, setFormData] = useState({
+    fullname: "",
+    age: "",
+    gender: "male",
+    height: "",
+    weight: "",
+    activityLevel: "sedentary",
+    goal: "lose_weight", // UI seçenekleriyle uyumlu olması için güncelledim
+    targetWeight: 68,
+  });
+
+  // --- 1. SAYFA YÜKLENİNCE PROFİLİ ÇEK ---
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      const token = localStorage.getItem("userToken");
+      if (!token) {
+        // Token yoksa login'e at
+        navigate("/login");
+        return;
+      }
+
+      try {
+        const data = await getUserProfile();
+        // Backend'den { profile: {...} } veya direkt {...} gelebilir yapına göre.
+        // Genelde controller { profile: ... } döndürüyordu.
+        const profile = data.profile || data;
+
+        if (profile) {
+          // Gelen veriyi form state'ine eşle
+          setFormData({
+            fullname: profile.fullname || "",
+            age: profile.age || "",
+            gender: profile.gender || "male",
+            height: profile.height || "",
+            weight: profile.weight || "",
+            activityLevel: profile.activityLevel || "sedentary",
+            goal: profile.goal || "lose_weight",
+            targetWeight: profile.targetWeight || 68,
+          });
+          console.log("✅ Mevcut profil verileri yüklendi.");
+        }
+      } catch (error) {
+        // 404 gelirse (Profil yoksa) sorun değil, kullanıcı yeni oluşturacak.
+        console.log("Henüz profil yok veya çekilemedi (Yeni Kayıt).");
+      } finally {
+        setIsFetching(false);
+      }
+    };
+
+    fetchProfileData();
+  }, [navigate]);
+
+  // --- INPUT HANDLERS ---
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   const handleWeightChange = (e) => {
-    setTargetWeight(e.target.value);
+    setFormData((prev) => ({
+      ...prev,
+      targetWeight: e.target.value,
+    }));
   };
+
+  // --- 2. KAYDETME İŞLEMİ (UPSERT) ---
+  const handleSubmit = async (e) => {
+    if (e) e.preventDefault();
+
+    const token = localStorage.getItem("userToken");
+    if (!token) {
+      alert("Oturum süreniz dolmuş. Lütfen tekrar giriş yapın.");
+      navigate("/login");
+      return;
+    }
+
+    if (
+      !formData.fullname ||
+      !formData.age ||
+      !formData.height ||
+      !formData.weight
+    ) {
+      alert("Lütfen Ad Soyad, Yaş, Boy ve Kilo alanlarını doldurunuz.");
+      return;
+    }
+
+    setIsLoading(true);
+
+    const now = new Date();
+
+    // Sayıları Number() formatına çeviriyoruz
+    const profileDataToSend = {
+      ...formData,
+      age: Number(formData.age),
+      height: Number(formData.height),
+      weight: Number(formData.weight),
+      targetWeight: Number(formData.targetWeight),
+      updatedAt: now,
+      createdAt: now,
+      // Backend create yaparsa createdAt'i kendi ekler
+    };
+
+    try {
+      // DİKKAT: saveUserProfile fonksiyonu hem create hem update yapar
+      await saveUserProfile(profileDataToSend);
+
+      console.log("Profil başarıyla kaydedildi.");
+      // Kayıt başarılıysa dashboard'a yönlendir
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Hata:", error);
+      alert(error.message || "Profil kaydedilirken bir hata oluştu.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Eğer veri hala çekiliyorsa basit bir loading gösterebilirsin (Opsiyonel)
+  if (isFetching) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-background-light dark:bg-background-dark">
+        <p className="text-primary font-bold">Veriler Yükleniyor...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col bg-background-light dark:bg-background-dark group/design-root overflow-x-hidden font-display">
@@ -17,6 +147,7 @@ export default function UserProfile() {
             <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 dark:border-gray-700 px-4 sm:px-6 md:px-10 py-3">
               <div className="flex items-center gap-4 text-gray-900 dark:text-white">
                 <div className="size-8 text-primary">
+                  {/* SVG İkonu */}
                   <svg
                     fill="none"
                     viewBox="0 0 48 48"
@@ -45,8 +176,14 @@ export default function UserProfile() {
                   Akıllı Beslenme
                 </h2>
               </div>
-              <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-gray-900 dark:text-gray-900 text-sm font-bold leading-normal tracking-[0.015em]">
-                <span className="truncate">Save &amp; Continue</span>
+              <button
+                onClick={handleSubmit}
+                disabled={isLoading}
+                className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-gray-900 dark:text-gray-900 text-sm font-bold leading-normal tracking-[0.015em] hover:bg-opacity-80 disabled:opacity-50"
+              >
+                <span className="truncate">
+                  {isLoading ? "Kaydediliyor..." : "Kaydet ve Devam Et"}
+                </span>
               </button>
             </header>
 
@@ -54,7 +191,7 @@ export default function UserProfile() {
               <div className="flex flex-col gap-3">
                 <div className="flex gap-6 justify-between">
                   <p className="text-gray-900 dark:text-white text-base font-medium leading-normal">
-                    Step 1 of 4: Personal Info
+                    Adım 1 / 4: Kişisel Bilgiler
                   </p>
                 </div>
                 <div className="rounded-full bg-primary/20 dark:bg-primary/30">
@@ -64,151 +201,187 @@ export default function UserProfile() {
                   ></div>
                 </div>
                 <p className="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">
-                  Let's get to know you
+                  Sizi tanıyalım
                 </p>
               </div>
 
               <div className="flex flex-wrap justify-between gap-3">
                 <div className="flex min-w-72 flex-col gap-3">
                   <p className="text-gray-900 dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]">
-                    Create Your Profile
+                    Profilinizi {isFetching ? "Yükleniyor..." : "Oluşturun"}
                   </p>
                   <p className="text-gray-500 dark:text-gray-400 text-base font-normal leading-normal">
-                    Tell us a bit about yourself to create your personalized
-                    plan.
+                    Size özel bir plan oluşturabilmemiz için kendinizden
+                    bahsedin.
                   </p>
                 </div>
               </div>
 
-              {/* Section 1: Personal Information */}
+              {/* Bölüm 1: Kişisel Bilgiler */}
               <section className="space-y-4">
                 <h2 className="text-gray-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] pb-3 pt-5">
-                  Personal Information
+                  Kişisel Bilgiler
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Full Name -> Ad Soyad */}
                   <label className="flex flex-col min-w-40 flex-1">
                     <p className="text-gray-900 dark:text-white text-base font-medium leading-normal pb-2">
-                      Full Name
+                      Ad Soyad
                     </p>
                     <input
+                      name="fullname"
+                      value={formData.fullname}
+                      onChange={handleInputChange}
                       className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark focus:border-primary h-14 placeholder:text-gray-500 dark:placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal"
-                      placeholder="Enter your name"
-                      defaultValue=""
+                      placeholder="Adınızı giriniz"
                     />
                   </label>
+
+                  {/* Age -> Yaş */}
                   <label className="flex flex-col min-w-40 flex-1">
                     <p className="text-gray-900 dark:text-white text-base font-medium leading-normal pb-2">
-                      Age
+                      Yaş
                     </p>
                     <input
-                      className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark focus:border-primary h-14 placeholder:text-gray-500 dark:placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal"
-                      placeholder="Enter your age"
+                      name="age"
                       type="number"
-                      defaultValue=""
+                      value={formData.age}
+                      onChange={handleInputChange}
+                      className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark focus:border-primary h-14 placeholder:text-gray-500 dark:placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal"
+                      placeholder="Yaşınızı giriniz"
                     />
                   </label>
+
+                  {/* Gender -> Cinsiyet */}
                   <div className="flex flex-col min-w-40 flex-1">
                     <p className="text-gray-900 dark:text-white text-base font-medium leading-normal pb-2">
-                      Gender
+                      Cinsiyet
                     </p>
                     <div className="grid grid-cols-2 gap-3">
-                      <label className="flex items-center gap-3 p-4 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer has-[:checked]:bg-primary/20 has-[:checked]:border-primary transition-colors">
+                      <label
+                        className={`flex items-center gap-3 p-4 border rounded-lg cursor-pointer transition-colors ${
+                          formData.gender === "male"
+                            ? "bg-primary/20 border-primary"
+                            : "border-gray-300 dark:border-gray-600"
+                        }`}
+                      >
                         <input
                           className="form-radio text-primary focus:ring-primary"
                           name="gender"
                           type="radio"
                           value="male"
+                          checked={formData.gender === "male"}
+                          onChange={handleInputChange}
                         />
                         <span className="text-gray-900 dark:text-white">
-                          Male
+                          Erkek
                         </span>
                       </label>
-                      <label className="flex items-center gap-3 p-4 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer has-[:checked]:bg-primary/20 has-[:checked]:border-primary transition-colors">
+                      <label
+                        className={`flex items-center gap-3 p-4 border rounded-lg cursor-pointer transition-colors ${
+                          formData.gender === "female"
+                            ? "bg-primary/20 border-primary"
+                            : "border-gray-300 dark:border-gray-600"
+                        }`}
+                      >
                         <input
                           className="form-radio text-primary focus:ring-primary"
                           name="gender"
                           type="radio"
                           value="female"
+                          checked={formData.gender === "female"}
+                          onChange={handleInputChange}
                         />
                         <span className="text-gray-900 dark:text-white">
-                          Female
+                          Kadın
                         </span>
                       </label>
                     </div>
                   </div>
+
+                  {/* Height & Weight -> Boy & Kilo */}
                   <div className="grid grid-cols-2 gap-6">
                     <label className="flex flex-col min-w-20 flex-1">
                       <p className="text-gray-900 dark:text-white text-base font-medium leading-normal pb-2">
-                        Height (cm)
+                        Boy (cm)
                       </p>
                       <input
+                        name="height"
+                        type="number"
+                        value={formData.height}
+                        onChange={handleInputChange}
                         className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark focus:border-primary h-14 placeholder:text-gray-500 dark:placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal"
                         placeholder="175"
-                        type="number"
-                        defaultValue=""
                       />
                     </label>
                     <label className="flex flex-col min-w-20 flex-1">
                       <p className="text-gray-900 dark:text-white text-base font-medium leading-normal pb-2">
-                        Weight (kg)
+                        Kilo (kg)
                       </p>
                       <input
+                        name="weight"
+                        type="number"
+                        value={formData.weight}
+                        onChange={handleInputChange}
                         className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark focus:border-primary h-14 placeholder:text-gray-500 dark:placeholder:text-gray-400 p-[15px] text-base font-normal leading-normal"
                         placeholder="70"
-                        type="number"
-                        defaultValue=""
                       />
                     </label>
                   </div>
                 </div>
               </section>
 
-              {/* Section 2: Lifestyle & Activity */}
+              {/* Bölüm 2: Yaşam Tarzı ve Aktivite */}
               <section className="space-y-4">
                 <h2 className="text-gray-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] pb-3 pt-5">
-                  Lifestyle &amp; Activity
+                  Yaşam Tarzı ve Aktivite
                 </h2>
                 <div className="flex flex-col">
                   <p className="text-gray-900 dark:text-white text-base font-medium leading-normal pb-2">
-                    Activity Level
+                    Aktivite Seviyesi
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                    {/* Activity Options */}
                     {[
                       {
                         val: "sedentary",
                         icon: "chair",
-                        label: "Sedentary",
-                        sub: "Little to no exercise",
+                        label: "Hareketsiz",
+                        sub: "Egzersiz yok/çok az",
                       },
                       {
                         val: "light",
                         icon: "directions_walk",
-                        label: "Lightly Active",
-                        sub: "1-3 days/week",
+                        label: "Az Hareketli",
+                        sub: "Haftada 1-3 gün",
                       },
                       {
                         val: "moderate",
                         icon: "fitness_center",
-                        label: "Moderately Active",
-                        sub: "3-5 days/week",
+                        label: "Orta Hareketli",
+                        sub: "Haftada 3-5 gün",
                       },
                       {
-                        val: "very",
+                        val: "active",
                         icon: "sprint",
-                        label: "Very Active",
-                        sub: "6-7 days/week",
+                        label: "Çok Hareketli",
+                        sub: "Haftada 6-7 gün",
                       },
                     ].map((item) => (
                       <label
                         key={item.val}
-                        className="flex flex-col items-center justify-center p-4 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer has-[:checked]:bg-primary/20 has-[:checked]:border-primary transition-colors text-center"
+                        className={`flex flex-col items-center justify-center p-4 border rounded-lg cursor-pointer transition-colors text-center ${
+                          formData.activityLevel === item.val
+                            ? "bg-primary/20 border-primary"
+                            : "border-gray-300 dark:border-gray-600"
+                        }`}
                       >
                         <input
                           className="sr-only"
-                          name="activity"
+                          name="activityLevel"
                           type="radio"
                           value={item.val}
+                          checked={formData.activityLevel === item.val}
+                          onChange={handleInputChange}
                         />
                         <span className="material-symbols-outlined text-4xl mb-2 text-gray-600 dark:text-gray-300">
                           {item.icon}
@@ -225,70 +398,80 @@ export default function UserProfile() {
                 </div>
               </section>
 
-              {/* Section 3: Primary Goal */}
+              {/* Bölüm 3: Ana Hedef */}
               <section className="space-y-4">
                 <h2 className="text-gray-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] pb-3 pt-5">
-                  Primary Goal
+                  Ana Hedef
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <label className="flex flex-col items-center justify-center p-6 border-2 border-gray-300 dark:border-gray-600 rounded-xl cursor-pointer has-[:checked]:border-primary has-[:checked]:ring-4 has-[:checked]:ring-primary/20 transition-all">
-                    <input
-                      className="sr-only"
-                      name="goal"
-                      type="radio"
-                      value="lose_weight"
-                    />
-                    <span className="material-symbols-outlined text-5xl mb-3 text-[#f56036]">
-                      trending_down
-                    </span>
-                    <span className="font-bold text-lg text-gray-900 dark:text-white">
-                      Lose Weight
-                    </span>
-                  </label>
-                  <label className="flex flex-col items-center justify-center p-6 border-2 border-gray-300 dark:border-gray-600 rounded-xl cursor-pointer has-[:checked]:border-primary has-[:checked]:ring-4 has-[:checked]:ring-primary/20 transition-all">
-                    <input
-                      defaultChecked
-                      className="sr-only"
-                      name="goal"
-                      type="radio"
-                      value="maintain_weight"
-                    />
-                    <span className="material-symbols-outlined text-5xl mb-3 text-[#fbcf33]">
-                      sync_alt
-                    </span>
-                    <span className="font-bold text-lg text-gray-900 dark:text-white">
-                      Maintain Weight
-                    </span>
-                  </label>
-                  <label className="flex flex-col items-center justify-center p-6 border-2 border-gray-300 dark:border-gray-600 rounded-xl cursor-pointer has-[:checked]:border-primary has-[:checked]:ring-4 has-[:checked]:ring-primary/20 transition-all">
-                    <input
-                      className="sr-only"
-                      name="goal"
-                      type="radio"
-                      value="gain_muscle"
-                    />
-                    <span className="material-symbols-outlined text-5xl mb-3 text-primary">
-                      trending_up
-                    </span>
-                    <span className="font-bold text-lg text-gray-900 dark:text-white">
-                      Gain Muscle
-                    </span>
-                  </label>
+                  {[
+                    {
+                      val: "lose_weight",
+                      icon: "trending_down",
+                      color: "#f56036",
+                      label: "Kilo Ver",
+                    },
+                    {
+                      val: "gain_weight",
+                      icon: "sync_alt",
+                      color: "#fbcf33",
+                      label: "Kiloyu Koru",
+                    },
+                    {
+                      val: "gain_muscle",
+                      icon: "trending_up",
+                      color: "text-primary",
+                      label: "Kas Yap",
+                    },
+                  ].map((item) => (
+                    <label
+                      key={item.val}
+                      className={`flex flex-col items-center justify-center p-6 border-2 rounded-xl cursor-pointer transition-all ${
+                        formData.goal === item.val
+                          ? "border-primary ring-4 ring-primary/20"
+                          : "border-gray-300 dark:border-gray-600"
+                      }`}
+                    >
+                      <input
+                        className="sr-only"
+                        name="goal"
+                        type="radio"
+                        value={item.val}
+                        checked={formData.goal === item.val}
+                        onChange={handleInputChange}
+                      />
+                      <span
+                        className={`material-symbols-outlined text-5xl mb-3 ${
+                          item.val === "gain_muscle" ? "text-primary" : ""
+                        }`}
+                        style={{
+                          color:
+                            item.val !== "gain_muscle" ? item.color : undefined,
+                        }}
+                      >
+                        {item.icon}
+                      </span>
+                      <span className="font-bold text-lg text-gray-900 dark:text-white">
+                        {item.label}
+                      </span>
+                    </label>
+                  ))}
                 </div>
 
+                {/* Target Weight -> Hedef Kilo */}
                 <div className="flex flex-col min-w-40 flex-1 pt-4">
                   <label
                     className="text-gray-900 dark:text-white text-base font-medium leading-normal pb-2 flex items-center gap-2"
                     htmlFor="target-weight-slider"
                   >
-                    Target Weight (kg)
+                    Hedef Kilo (kg)
                     <div className="relative group">
                       <span className="material-symbols-outlined text-base text-gray-400 cursor-help">
                         info
                       </span>
                       <div className="absolute bottom-full mb-2 w-60 bg-gray-800 text-white text-xs rounded-lg py-2 px-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none left-1/2 -translate-x-1/2">
-                        Set your desired weight. We'll use this to calculate
-                        your daily calorie and macro goals.
+                        Arzu ettiğiniz kiloyu belirleyin. Günlük kalori ve makro
+                        hedeflerinizi buna göre hesaplayacağız.
                         <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-4 border-x-transparent border-t-4 border-t-gray-800"></div>
                       </div>
                     </div>
@@ -300,13 +483,13 @@ export default function UserProfile() {
                       max="150"
                       min="40"
                       type="range"
-                      value={targetWeight}
+                      value={formData.targetWeight}
                       onChange={handleWeightChange}
                     />
                     <input
                       className="form-input w-24 text-center rounded-lg text-gray-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark focus:border-primary h-12 p-2 text-base font-normal leading-normal"
                       type="number"
-                      value={targetWeight}
+                      value={formData.targetWeight}
                       onChange={handleWeightChange}
                     />
                   </div>
@@ -314,8 +497,14 @@ export default function UserProfile() {
               </section>
 
               <div className="flex justify-center pt-8">
-                <button className="flex w-full max-w-sm cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl h-14 px-6 bg-primary text-gray-900 text-lg font-bold leading-normal tracking-[0.015em] hover:bg-opacity-90 transition-colors">
-                  <span>Generate My Plan</span>
+                <button
+                  onClick={handleSubmit}
+                  disabled={isLoading}
+                  className="flex w-full max-w-sm cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl h-14 px-6 bg-primary text-gray-900 text-lg font-bold leading-normal tracking-[0.015em] hover:bg-opacity-90 transition-colors disabled:opacity-50"
+                >
+                  <span>
+                    {isLoading ? "Oluşturuluyor..." : "Planımı Oluştur"}
+                  </span>
                   <span className="material-symbols-outlined">
                     arrow_forward
                   </span>
