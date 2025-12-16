@@ -34,24 +34,31 @@ const LoginScreen = () => {
     setIsLoading(true);
 
     try {
-      // 1. Backend'e istek at
-      // api.js içindeki loginUser fonksiyonu token'ı localStorage'a kaydediyor.
-      await loginUser(formData);
+      // 1. Backend isteğini yap ve gelen veriyi 'data' değişkenine al
+      // (Backend şuna benzer bir şey dönüyor: { accessToken: "...", hasProfile: true, ... })
+      const data = await loginUser(formData);
 
-      // 2. Token Kontrolü (Çifte Dikiş)
-      // api.js kaydetti mi diye bakıyoruz.
-      const token = localStorage.getItem("userToken");
+      // 2. Token kontrolü (api.js zaten localStorage'a yazdı ama yine de kontrol edelim)
+      const token = localStorage.getItem("userToken") || data.accessToken;
 
       if (token) {
-        console.log("Giriş Başarılı, Yönlendiriliyor...");
-        // UserProfile.jsx sayfasının route adı neyse tam olarak onu yaz:
-        navigate("/userprofile");
+        console.log("Giriş Başarılı. Sunucu Yanıtı:", data);
+
+        // --- AKILLI YÖNLENDİRME ---
+        // Eğer backend 'hasProfile: true' dediyse Dashboard'a,
+        // Eğer 'hasProfile: false' dediyse Profil Oluşturma sayfasına git.
+        if (data.hasProfile) {
+          console.log("✅ Profil daha önce oluşturulmuş -> Dashboard");
+          navigate("/dashboard");
+        } else {
+          console.log("⚠️ Profil henüz yok -> Profil Oluşturma Ekranı");
+          navigate("/userprofile");
+        }
       } else {
         throw new Error("Giriş başarılı ancak token kaydedilemedi.");
       }
     } catch (err) {
       console.error("Giriş Hatası:", err);
-      // Backend'den gelen mesajı veya genel hatayı göster
       setError(err.message || "Giriş başarısız! E-posta veya şifre hatalı.");
     } finally {
       setIsLoading(false);
