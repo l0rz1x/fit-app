@@ -13,6 +13,8 @@ import Pricing from "./pages/Pricing";
 import Contact from "./pages/Contact";
 import Workout from "./pages/Workout";
 import MealPlan from "./pages/MealPlan";
+import ScrollToTop from "./components/ScrollToTop";
+import NotFound from "./pages/NotFound"; // 404 sayfasi
 
 function App() {
   // --- TEMA AYARLARI ---
@@ -40,6 +42,9 @@ function App() {
           Routes'un dışında olduğu için her sayfada görünür.
           theme ve toggleTheme'i props olarak gönderiyoruz.
         */}
+
+        <ScrollToTop />
+
         <Header theme={theme} toggleTheme={toggleTheme} />
 
         {/* 2. SAYFA İÇERİKLERİ BURAYA GELİR */}
@@ -59,12 +64,7 @@ function App() {
             <Route path="/userprofile" element={<UserProfile />} />
 
             {/* 404 Sayfası (Eşleşmeyen rota olursa) */}
-            <Route
-              path="*"
-              element={
-                <div className="text-center mt-20">Sayfa Bulunamadı</div>
-              }
-            />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
       </Router>

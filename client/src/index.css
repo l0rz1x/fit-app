@@ -28,6 +28,9 @@
     --bg-color: #12201a;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
   /* 2. ADIM: Body'ye uygula */
   body {
     background-color: var(--bg-color);
