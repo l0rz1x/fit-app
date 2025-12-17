@@ -82,33 +82,6 @@ const RegisterScreen = () => {
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark transition-colors duration-300 group/design-root overflow-x-hidden">
       <div className="layout-container flex h-full grow flex-col">
-        {/* Header */}
-        <header className="flex h-16 w-full shrink-0 items-center justify-between px-6 md:px-10 lg:px-20 border-b border-border-light dark:border-border-dark lg:border-none">
-          <div className="flex items-center gap-2">
-            <span
-              className="material-symbols-outlined text-primary text-3xl"
-              style={{ fontVariationSettings: "'FILL' 1, 'wght' 500" }}
-            >
-              eco
-            </span>
-            <p className="text-lg font-bold text-text-light dark:text-text-dark">
-              Akıllı Beslenme
-            </p>
-          </div>
-          <div className="flex items-center gap-4">
-            <p className="hidden sm:block text-sm text-subtle-light dark:text-subtle-dark">
-              Already have an account?
-            </p>
-            {/* React Router Link kullanımı */}
-            <Link
-              className="cursor-pointer rounded-lg bg-primary/10 dark:bg-primary/20 px-4 py-2 text-sm font-bold text-primary transition-colors hover:bg-primary/20 dark:hover:bg-primary/30"
-              to="/login"
-            >
-              Log In
-            </Link>
-          </div>
-        </header>
-
         {/* Main Content */}
         <main className="flex flex-1 items-center justify-center py-10 lg:py-16">
           <div className="grid w-full max-w-6xl grid-cols-1 gap-8 px-6 md:px-10 lg:grid-cols-2 lg:gap-16">

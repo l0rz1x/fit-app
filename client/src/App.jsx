@@ -1,24 +1,72 @@
-import React from "react";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
-import WelcomeScreen from "./pages/WelcomeScreen";
-import UserProfile from "./pages/UserProfile";
-import LoginScreen from "./pages/LoginScreen";
-import RegisterScreen from "./pages/RegisterScreen";
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import "./App.css";
+// --- BİLEŞENLERİNİ IMPORT ET ---
+// Dosya yollarını kendi klasör yapına göre kontrol et (örn: ./pages/Login)
+import Header from "./components/Header";
+import WelcomeScreen from "./pages/WelcomeScreen";
+import Login from "./pages/LoginScreen";
+import Register from "./pages/RegisterScreen"; // Register sayfan varsa
 import Dashboard from "./pages/Dashboard";
+import UserProfile from "./pages/UserProfile"; // Profil oluşturma sayfan
+import Pricing from "./pages/Pricing";
+import Contact from "./pages/Contact";
+import Workout from "./pages/Workout";
+import MealPlan from "./pages/MealPlan";
 
 function App() {
+  // --- TEMA AYARLARI ---
+  // Kullanıcının tercihini localStorage'dan al, yoksa 'light' yap
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+
+  const toggleTheme = () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+  };
+
+  // Tema değiştiğinde HTML etiketine class ekle (Tailwind Dark Mode için şart)
+  useEffect(() => {
+    document.documentElement.className = theme;
+  }, [theme]);
+
   return (
-    <div className="App">
+    // Ana kapsayıcı div
+    <div
+      className={`min-h-screen bg-background-light dark:bg-background-dark text-gray-900 dark:text-white transition-colors duration-300`}
+    >
       <Router>
-        <Routes>
-          <Route path="/" element={<WelcomeScreen />} />
-          <Route path="/userprofile" element={<UserProfile />} />
-          <Route path="/login" element={<LoginScreen />} />
-          <Route path="/register" element={<RegisterScreen />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-        </Routes>
+        {/* 1. HEADER BURAYA GELİR 
+          Routes'un dışında olduğu için her sayfada görünür.
+          theme ve toggleTheme'i props olarak gönderiyoruz.
+        */}
+        <Header theme={theme} toggleTheme={toggleTheme} />
+
+        {/* 2. SAYFA İÇERİKLERİ BURAYA GELİR */}
+        <main>
+          <Routes>
+            {/* Açık Rotalar (Giriş yapmadan görülebilenler) */}
+            <Route path="/" element={<WelcomeScreen />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/contact" element={<Contact />} />
+
+            {/* Korumalı Rotalar (Giriş yaptıktan sonra gidilenler) */}
+            <Route path="/workout" element={<Workout />} />
+            <Route path="/mealplan" element={<MealPlan />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/userprofile" element={<UserProfile />} />
+
+            {/* 404 Sayfası (Eşleşmeyen rota olursa) */}
+            <Route
+              path="*"
+              element={
+                <div className="text-center mt-20">Sayfa Bulunamadı</div>
+              }
+            />
+          </Routes>
+        </main>
       </Router>
     </div>
   );
