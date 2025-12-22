@@ -2,37 +2,49 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 export default function Header({ theme, toggleTheme }) {
-  // baris ustanın navlink stili
-  // px buton için 4 ama flexbox gap 3
-  const navLinkStyle =
-    "text-gray-800 dark:text-gray-300 text-sm font-medium leading-normal hover:text-primary transition-colors cursor-pointer hover:bg-gray-200 dark:hover:bg-white/10 px-4 py-2 rounded-lg duration-200 active:scale-95";
-
   const navigate = useNavigate();
-  const location = useLocation(); // Sayfa değişimlerini dinlemek için
+  const location = useLocation(); // Sayfa değişimlerini dinliyoruz
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // Sayfa her değiştiğinde token var mı kontrol et
   useEffect(() => {
     const token = localStorage.getItem("userToken");
-    setIsLoggedIn(!!token); // Token varsa true, yoksa false
+    setIsLoggedIn(!!token);
   }, [location]);
 
   // Çıkış Yap Fonksiyonu
   const handleLogout = () => {
-    localStorage.removeItem("userToken"); // Token'ı sil
+    localStorage.removeItem("userToken");
     setIsLoggedIn(false);
-    navigate("/"); // Welcome sayfasına yönlendir
+    navigate("/");
+  };
+
+  // --- AKTİF TAB STİL FONKSİYONU ---
+  // Hangi sayfadaysak o butonu hafif gri ve kalın yapar
+  const getNavLinkClass = (path) => {
+    const isActive = location.pathname === path;
+
+    // Ortak stiller
+    const baseStyle =
+      "text-sm font-medium leading-normal transition-all cursor-pointer px-4 py-2 rounded-lg duration-200 active:scale-95";
+
+    // Aktifse (Gri Arkaplan)
+    if (isActive) {
+      return `${baseStyle} bg-gray-200 dark:bg-white/20 text-gray-900 dark:text-white font-bold shadow-sm`;
+    }
+
+    // Pasifse (Hover efekti)
+    return `${baseStyle} text-gray-800 dark:text-gray-300 hover:text-primary hover:bg-gray-100 dark:hover:bg-white/10`;
   };
 
   return (
     <header className="w-full sticky top-0 z-50 bg-surface-light/90 dark:bg-surface-dark/90 backdrop-blur-md flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/20 dark:border-primary/10 px-4 sm:px-10 py-3 transition-colors duration-300">
       {/* --- SOL TARAFTAKİ LOGO --- */}
       <div
-        // Giriş yaptıysa Dashboard'a, yapmadıysa Ana Sayfaya git
         onClick={() => navigate(isLoggedIn ? "/dashboard" : "/")}
-        className="flex items-center gap-4 text-gray-800 dark:text-gray-200 cursor-pointer select-none"
+        className="flex items-center gap-4 text-gray-800 dark:text-gray-200 cursor-pointer select-none group"
       >
-        <div className="size-8 text-primary">
+        <div className="size-8 text-primary group-hover:scale-110 transition-transform duration-300">
           <svg
             fill="currentColor"
             viewBox="0 0 48 48"
@@ -64,34 +76,41 @@ export default function Header({ theme, toggleTheme }) {
         {/* --- IF: KULLANICI GİRİŞ YAPMIŞSA --- */}
         {isLoggedIn ? (
           <div className="flex items-center gap-3">
-            {/* GİRİŞ YAPANLARA ÖZEL LİNKLER */}
             <button
               onClick={() => navigate("/workout")}
-              className={navLinkStyle}
+              className={getNavLinkClass("/workout")}
             >
               Workout
             </button>
             <button
               onClick={() => navigate("/mealplan")}
-              className={navLinkStyle}
+              className={getNavLinkClass("/mealplan")}
             >
               Meal Plan
             </button>
             <button
               onClick={() => navigate("/dashboard")}
-              className={navLinkStyle}
+              className={getNavLinkClass("/dashboard")}
             >
               Dashboard
             </button>
             <button
               onClick={() => navigate("/userprofile")}
-              className={navLinkStyle}
+              className={getNavLinkClass("/userprofile")}
             >
               Profilim
             </button>
             <button
+              onClick={() => navigate("/assistant")}
+              className={getNavLinkClass("/assistant")}
+            >
+              Chatbot
+            </button>
+
+            {/* Tema Butonu */}
+            <button
               onClick={toggleTheme}
-              className="flex items-center justify-center size-10 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-yellow-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all"
+              className="flex items-center justify-center size-10 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-yellow-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all ml-2"
             >
               {theme === "light" ? (
                 <span className="material-symbols-outlined">dark_mode</span>
@@ -99,6 +118,7 @@ export default function Header({ theme, toggleTheme }) {
                 <span className="material-symbols-outlined">light_mode</span>
               )}
             </button>
+
             {/* ÇIKIŞ BUTONU */}
             <button
               onClick={handleLogout}
@@ -114,17 +134,18 @@ export default function Header({ theme, toggleTheme }) {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => navigate("/pricing")}
-                className="text-gray-800 dark:text-gray-300 text-sm font-medium leading-normal hover:text-primary transition-colors cursor-pointer hover:bg-gray-200 dark:hover:bg-white/10 px-4 py-2 rounded-lg duration-200 active:scale-95"
+                className={getNavLinkClass("/pricing")}
               >
                 Pricing
               </button>
               <button
                 onClick={() => navigate("/contact")}
-                className={navLinkStyle}
+                className={getNavLinkClass("/contact")}
               >
                 Contact
               </button>
             </div>
+
             <button
               onClick={toggleTheme}
               className="flex items-center justify-center size-10 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-yellow-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all"
@@ -135,6 +156,7 @@ export default function Header({ theme, toggleTheme }) {
                 <span className="material-symbols-outlined">light_mode</span>
               )}
             </button>
+
             <div className="flex gap-2 items-center">
               <button
                 onClick={() => navigate("/login")}

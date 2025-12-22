@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// Backend adresin (Server.js'de 5002 portunu ayarladığın için burası 5002 kalmalı)
 const API_URL = "http://localhost:5002";
 
 const API = axios.create({
@@ -40,7 +41,7 @@ export const loginUser = async (formData) => {
       throw new Error(response.data.error);
     }
 
-    // Token isimlendirmesi backend'e göre değişebilir (token, accessToken, jwt vb.)
+    // Token isimlendirmesi backend'e göre değişebilir
     const token =
       response.data.token || response.data.accessToken || response.data.jwt;
 
@@ -57,35 +58,69 @@ export const loginUser = async (formData) => {
       error.message ||
       "Giriş işlemi sırasında hata oluştu.";
     console.error("Login Hatası:", errorMessage);
-    throw new Error(errorMessage); // Hatayı fırlat ki frontend yakalayabilsin
+    throw new Error(errorMessage);
   }
 };
 
 // --- PROFİL İŞLEMLERİ ---
 
-// 1. Profil Verisini Çek (Sayfa yüklenince form dolsun diye)
+// 1. Profil Verisini Çek
 export const getUserProfile = async () => {
   try {
-    // Backend rotan muhtemelen GET /profile veya /profile/me şeklindedir
-    // Token sayesinde backend kim olduğunu bilir, ID göndermene gerek kalmaz.
     const response = await API.get("/profile/me");
     return response.data;
   } catch (error) {
-    // Eğer profil yoksa 404 dönebilir, bu normaldir.
     console.warn("Profil çekilemedi:", error.response?.data || error.message);
     throw error;
   }
 };
 
-// 2. Profili Oluştur veya Güncelle (Formu kaydedince çalışır)
+// 2. Profili Oluştur veya Güncelle
 export const saveUserProfile = async (profileData) => {
   try {
-    // Backend'de yazdığımız "Upsert" (Varsa güncelle, yoksa oluştur) controller'ına gider.
     const response = await API.post("/profile", profileData);
     return response.data;
   } catch (error) {
     console.error(
       "Profil Kayıt Hatası:",
+      error.response?.data || error.message
+    );
+    throw error.response?.data || error.message;
+  }
+};
+
+// --- CHAT (AI ASİSTAN) İŞLEMLERİ (YENİ EKLENEN KISIM) ---
+
+// 1. Sohbet Geçmişini Getir
+export const getChatHistory = async () => {
+  try {
+    // Interceptor sayesinde token otomatik gider
+    // GET http://localhost:5002/chat/history
+    const response = await API.get("/chat/history");
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Chat geçmişi hatası:",
+      error.response?.data || error.message
+    );
+    // Hata olsa bile sayfanın patlamaması için boş dizi dönüyoruz
+    return [];
+  }
+};
+
+// 2. Mesaj Gönder
+export const sendMessageToAI = async (message, context) => {
+  try {
+    // POST http://localhost:5002/chat
+    // Body: { message: "...", context: "nutrition" }
+    const response = await API.post("/chat", {
+      message: message,
+      context: context,
+    });
+    return response.data; // Backend'den dönen AI cevabı
+  } catch (error) {
+    console.error(
+      "Mesaj gönderme hatası:",
       error.response?.data || error.message
     );
     throw error.response?.data || error.message;
