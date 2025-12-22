@@ -15,6 +15,7 @@ import Workout from "./pages/Workout";
 import MealPlan from "./pages/MealPlan";
 import ScrollToTop from "./components/ScrollToTop";
 import NotFound from "./pages/NotFound"; // 404 sayfasi
+import Assistant from "./pages/Assistant"; // Yapay zeka asistan sayfası
 
 function App() {
   // --- TEMA AYARLARI ---
@@ -62,6 +63,7 @@ function App() {
             <Route path="/mealplan" element={<MealPlan />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/userprofile" element={<UserProfile />} />
+            <Route path="/assistant" element={<Assistant />} />
 
             {/* 404 Sayfası (Eşleşmeyen rota olursa) */}
             <Route path="*" element={<NotFound />} />
