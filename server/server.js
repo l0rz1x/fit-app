@@ -15,6 +15,9 @@ app.use("/auth", usersRouter);
 const profileRouter = require("./routes/Profile");
 app.use("/profile", profileRouter);
 
+const chatRouter = require("./routes/Chat");
+app.use("/chat", chatRouter);
+
 db.sequelize.sync({ force: false }).then(() => {
   app.listen(PORT, () => {
     console.log(`server started at ${PORT}`);
