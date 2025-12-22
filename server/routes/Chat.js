@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { ChatLog } = require("../models");
+const { ChatLog, WorkoutPlan } = require("../models");
 const { validateToken } = require("../middlewares/authMiddleware");
 const { getAIResponse } = require("../services/aiService");
 
@@ -22,6 +22,7 @@ router.post("/", validateToken, async (req, res) => {
     const aiResult = await getAIResponse(message);
 
     let aiMessage = "";
+    let newPlan = null;
 
     if (!aiResult) {
       aiMessage = "AI servisine ulaşılamadı (Yanıt yok).";
@@ -43,10 +44,21 @@ router.post("/", validateToken, async (req, res) => {
       message: aiMessage,
     });
 
+    if (aiResult.workout_plan && aiResult.workout_plan.length > 0) {
+      await WorkoutPlan.update({ isActive: false }, { where: { userId } });
+
+      newPlan = await WorkoutPlan.create({
+        userId: userId,
+        planData: aiResult.workout_plan,
+        isActive: true,
+      });
+    }
+
     res.json({
       success: true,
       userMessage: message,
       aiMessage: aiMessage,
+      updatedPlan: newPlan,
     });
   } catch (err) {
     res.status(500).json({ error: "Mesaj gönderilirken bir hata oluştu." });
