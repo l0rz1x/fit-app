@@ -18,6 +18,9 @@ app.use("/profile", profileRouter);
 const chatRouter = require("./routes/Chat");
 app.use("/chat", chatRouter);
 
+const NutritionChatRouter = require("./routes/NutritionChat");
+app.use("/nutritionChat", NutritionChatRouter);
+
 db.sequelize.sync({ force: false }).then(() => {
   app.listen(PORT, () => {
     console.log(`server started at ${PORT}`);

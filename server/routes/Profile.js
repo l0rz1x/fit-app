@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const { Profile, WorkoutPlan, ChatLog } = require("../models");
+const { Profile, WorkoutPlan, ChatLog, NutritionPlan } = require("../models");
 const { validateToken } = require("../middlewares/authMiddleware");
 const { getAIResponse } = require("../services/aiService");
+const { getNutritionResponse } = require("../services/nutritionAiService");
 
 router.post("/", validateToken, async (req, res) => {
   const userId = req.user.id;
@@ -51,11 +52,12 @@ router.post("/", validateToken, async (req, res) => {
     const message = `Ben ${age} yaşında,
       ${weight}kg ağırlığında,
       ${height}cm boyunda bir ${gender}im.
-      Hedefim: ${goal}.
+      hareket halim ${activityLevel},
+      Hedefim: ${goal} ve hedef kilom ${targetWeight}.
       Bana uygun başlangıç
       seviyesi bir fitness programı hazırlar mısın?`;
 
-    const aiResult = await getAIResponse(message, userToken);
+    const aiResult = await getAIResponse(message);
 
     if (!aiResult) {
       return res.status(503).json({
@@ -81,11 +83,48 @@ router.post("/", validateToken, async (req, res) => {
       });
     }
 
+    const nutritionMessage = `Ben ${age} yaşında,
+      ${weight}kg ağırlığında,
+      ${height}cm boyunda bir ${gender}im.
+      hareket halim ${activityLevel},
+      Hedefim: ${goal} ve hedef kilom ${targetWeight}.
+      Bana uygun başlangıç
+      seviyesi bir beslenme programı hazırlar mısın?`;
+
+    const nutritionPayload = {
+      user_id: userId.toString(),
+      history: [],
+      query: nutritionMessage,
+    };
+    const nutritionAiResult = await getNutritionResponse(nutritionPayload);
+    let savedNutrition = null;
+    if (
+      nutritionAiResult &&
+      nutritionAiResult.diet_plan &&
+      nutritionAiResult.diet_plan.length > 0
+    ) {
+      await NutritionPlan.update({ isActive: false }, { where: { userId } });
+
+      savedNutrition = await NutritionPlan.create({
+        userId,
+        planData: nutritionAiResult.diet_plan,
+        isActive: true,
+      });
+    }
+
     res.status(201).json({
       success: true,
       profile,
-      initialPlan: aiResult.workout_plan,
-      message: aiResult.chat_message,
+      initialPlan: aiResult ? aiResult.workout_plan : null,
+      message: aiResult
+        ? aiResult.chat_message
+        : "Workout planı şu an oluşturulamadı, daha sonra tekrar deneyin.",
+      initialNutritionPlan: nutritionAiResult
+        ? nutritionAiResult.diet_plan
+        : null,
+      nutritionMessage: nutritionAiResult
+        ? nutritionAiResult.chat_message
+        : "Beslenme planı şu an oluşturulamadı, daha sonra tekrar deneyin.",
     });
   } catch (err) {
     console.error("Profile Route Hatası:", err);

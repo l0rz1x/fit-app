@@ -37,6 +37,14 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "userId",
       onDelete: "CASCADE",
     });
+    Users.hasMany(models.NutritionChat, {
+      foreignKey: "userId",
+      onDelete: "CASCADE",
+    });
+    Users.hasOne(models.NutritionPlan, {
+      foreignKey: "userId",
+      onDelete: "CASCADE",
+    });
   };
   return Users;
 };

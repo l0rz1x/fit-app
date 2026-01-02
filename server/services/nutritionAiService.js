@@ -1,8 +1,8 @@
 const axios = require("axios");
 require("dotenv").config();
 
-const getAIResponse = async (userMessage) => {
-  const rag_url = process.env.RAG_API_URL;
+const getNutritionResponse = async (nutritionPayload) => {
+  const nutrition_url = process.env.NUTRITION_API_URL;
 
   try {
     const config = {
@@ -11,13 +11,7 @@ const getAIResponse = async (userMessage) => {
         password: process.env.AI_API_PASSWORD,
       },
     };
-    const response = await axios.post(
-      rag_url,
-      {
-        message: userMessage,
-      },
-      config
-    );
+    const response = await axios.post(nutrition_url, nutritionPayload, config);
     return response.data;
   } catch (error) {
     if (error.response) {
@@ -30,4 +24,4 @@ const getAIResponse = async (userMessage) => {
   }
 };
 
-module.exports = { getAIResponse };
+module.exports = { getNutritionResponse };
