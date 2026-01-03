@@ -43,7 +43,7 @@ router.post("/", validateToken, async (req, res) => {
 
     let aiMessage = "Beslenme uzmanına ulaşılamadı.";
     let dietPlan = null;
-    let recipeCard = null;
+    let recipeCards = null;
 
     if (aiResult) {
       aiMessage = aiResult.chat_message;
@@ -59,8 +59,8 @@ router.post("/", validateToken, async (req, res) => {
         });
       }
 
-      if (aiResult.recipe_card) {
-        recipeCard = aiResult.recipe_card;
+      if (aiResult.recipe_cards && aiResult.recipe_cards.length > 0) {
+        recipeCards = aiResult.recipe_cards[0];
       }
     }
 
@@ -68,37 +68,16 @@ router.post("/", validateToken, async (req, res) => {
       userId,
       sender: "ai",
       message: aiMessage,
+      recipeCards: recipeCards,
     });
     res.json({
       success: true,
       userMessage: query,
       aiMessage: aiMessage,
       dietPlan: dietPlan,
-      recipeCard: recipeCard,
+      recipeCards: recipeCards,
     });
   } catch (err) {
-    console.log("------------------ HATA RAPORU BAŞLANGIÇ ------------------");
-
-    // 1. Biz Ne Gönderdik?
-    // (nutritionPayload değişkenine erişebilmek için try bloğunun hemen üstünde tanımlı olması lazım,
-    // eğer try içindeyse bu satır hata verebilir. O yüzden bunu aşağıda açıklayacağım şekilde yap)
-
-    if (err.response) {
-      console.log("❌ PYTHON SUNUCUSU 'HAYIR' DEDİ!");
-      console.log("Status Code:", err.response.status);
-
-      // BU SATIR ÇOK ÖNEMLİ: Hatanın içini string'e çevirip tamamen okuyoruz
-      console.log("🔍 DETAYLI HATA MESAJI:");
-      console.log(JSON.stringify(err.response.data, null, 2));
-    } else if (err.request) {
-      console.log(
-        "❌ Sunucuya istek atıldı ama cevap gelmedi (Timeout/Network hatası)."
-      );
-    } else {
-      console.log("❌ İstek oluşturulurken hata çıktı:", err.message);
-    }
-    console.log("------------------ HATA RAPORU BİTİŞ ------------------");
-
     res.status(500).json({ error: err ? err.message : "Bir hata oluştu" });
   }
 });
@@ -113,28 +92,6 @@ router.get("/history", validateToken, async (req, res) => {
     });
     res.json(history);
   } catch (err) {
-    console.log("------------------ HATA RAPORU BAŞLANGIÇ ------------------");
-
-    // 1. Biz Ne Gönderdik?
-    // (nutritionPayload değişkenine erişebilmek için try bloğunun hemen üstünde tanımlı olması lazım,
-    // eğer try içindeyse bu satır hata verebilir. O yüzden bunu aşağıda açıklayacağım şekilde yap)
-
-    if (err.response) {
-      console.log("❌ PYTHON SUNUCUSU 'HAYIR' DEDİ!");
-      console.log("Status Code:", err.response.status);
-
-      // BU SATIR ÇOK ÖNEMLİ: Hatanın içini string'e çevirip tamamen okuyoruz
-      console.log("🔍 DETAYLI HATA MESAJI:");
-      console.log(JSON.stringify(err.response.data, null, 2));
-    } else if (err.request) {
-      console.log(
-        "❌ Sunucuya istek atıldı ama cevap gelmedi (Timeout/Network hatası)."
-      );
-    } else {
-      console.log("❌ İstek oluşturulurken hata çıktı:", err.message);
-    }
-    console.log("------------------ HATA RAPORU BİTİŞ ------------------");
-
     res.status(500).json({ error: err ? err.message : "Bir hata oluştu" });
   }
 });

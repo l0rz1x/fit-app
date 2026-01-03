@@ -17,6 +17,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: false,
     },
+    recipeCards: {
+      type: DataTypes.JSON,
+      allowNull: true,
+    },
   });
 
   return NutritionChat;
