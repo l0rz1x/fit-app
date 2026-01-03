@@ -1,6 +1,6 @@
 import axios from "axios";
 
-// Backend adresin (Server.js'de 5002 portunu ayarladığın için burası 5002 kalmalı)
+// Backend adresin
 const API_URL = "http://localhost:5002";
 
 const API = axios.create({
@@ -11,8 +11,6 @@ const API = axios.create({
 });
 
 // --- INTERCEPTOR ---
-// Her istekte (request) LocalStorage'dan token'ı alıp header'a ekler.
-// Bu sayede backend senin "hangi kullanıcı" olduğunu anlar (req.user.id çalışır).
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem("userToken");
   if (token) {
@@ -21,8 +19,7 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
-// --- AUTH İŞLEMLERİ ---
-
+// --- AUTH & PROFİL (AYNEN KALIYOR) ---
 export const registerUser = async (userData) => {
   try {
     const response = await API.post("/auth/register", userData);
@@ -35,89 +32,97 @@ export const registerUser = async (userData) => {
 export const loginUser = async (formData) => {
   try {
     const response = await API.post("/auth/login", formData);
+    if (response.data.error) throw new Error(response.data.error);
 
-    // Backend'den gelen veriyi kontrol et
-    if (response.data.error) {
-      throw new Error(response.data.error);
-    }
-
-    // Token isimlendirmesi backend'e göre değişebilir
     const token =
       response.data.token || response.data.accessToken || response.data.jwt;
-
     if (token) {
       localStorage.setItem("userToken", token);
-      console.log("✅ Giriş başarılı, Token kaydedildi.");
       return response.data;
     } else {
-      throw new Error("Giriş başarısız: Sunucu token göndermedi.");
+      throw new Error("Token alınamadı.");
     }
   } catch (error) {
-    const errorMessage =
-      error.response?.data?.message ||
-      error.message ||
-      "Giriş işlemi sırasında hata oluştu.";
-    console.error("Login Hatası:", errorMessage);
-    throw new Error(errorMessage);
+    throw error.response?.data?.message || error.message;
   }
 };
 
-// --- PROFİL İŞLEMLERİ ---
-
-// 1. Profil Verisini Çek
 export const getUserProfile = async () => {
   try {
     const response = await API.get("/profile/me");
     return response.data;
   } catch (error) {
-    console.warn("Profil çekilemedi:", error.response?.data || error.message);
     throw error;
   }
 };
 
-// 2. Profili Oluştur veya Güncelle
 export const saveUserProfile = async (profileData) => {
   try {
     const response = await API.post("/profile", profileData);
     return response.data;
   } catch (error) {
-    console.error(
-      "Profil Kayıt Hatası:",
-      error.response?.data || error.message
-    );
     throw error.response?.data || error.message;
   }
 };
 
-// --- CHAT (AI ASİSTAN) İŞLEMLERİ (YENİ EKLENEN KISIM) ---
+// --- CHAT İŞLEMLERİ (DÜZELTİLEN KISIM) ---
 
-// 1. Sohbet Geçmişini Getir
 export const getChatHistory = async () => {
   try {
-    // Interceptor sayesinde token otomatik gider
-    // GET http://localhost:5002/chat/history
-    const response = await API.get("/chat/history");
-    return response.data;
-  } catch (error) {
-    console.error(
-      "Chat geçmişi hatası:",
-      error.response?.data || error.message
+    const [fitnessRes, nutritionRes] = await Promise.allSettled([
+      API.get("/chat/history"),
+      API.get("/nutritionChat/history"),
+    ]);
+
+    let combinedHistory = [];
+
+    if (fitnessRes.status === "fulfilled") {
+      const fitnessData = fitnessRes.value.data.map((msg) => ({
+        ...msg,
+        context: "fitness",
+      }));
+      combinedHistory = [...combinedHistory, ...fitnessData];
+    }
+
+    if (nutritionRes.status === "fulfilled") {
+      const nutritionData = nutritionRes.value.data.map((msg) => ({
+        ...msg,
+        context: "nutrition",
+      }));
+      combinedHistory = [...combinedHistory, ...nutritionData];
+    }
+
+    combinedHistory.sort(
+      (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
     );
-    // Hata olsa bile sayfanın patlamaması için boş dizi dönüyoruz
+    return combinedHistory;
+  } catch (error) {
+    console.error("Chat geçmişi hatası:", error);
     return [];
   }
 };
 
-// 2. Mesaj Gönder
+// --- KRİTİK DÜZELTME BURADA ---
 export const sendMessageToAI = async (message, context) => {
   try {
-    // POST http://localhost:5002/chat
-    // Body: { message: "...", context: "nutrition" }
-    const response = await API.post("/chat", {
-      message: message,
-      context: context,
-    });
-    return response.data; // Backend'den dönen AI cevabı
+    let endpoint = "/chat";
+    let payload = {}; // Göndereceğimiz veri paketi
+
+    // 1. Eğer mod Beslenme ise:
+    if (context === "nutrition") {
+      endpoint = "/nutritionChat";
+      // Backend burada 'query' istiyor!
+      payload = { query: message };
+    }
+    // 2. Eğer mod Spor ise:
+    else {
+      endpoint = "/chat";
+      // Backend burada 'message' istiyor (ve context)
+      payload = { message: message, context: context };
+    }
+
+    const response = await API.post(endpoint, payload);
+    return response.data;
   } catch (error) {
     console.error(
       "Mesaj gönderme hatası:",
