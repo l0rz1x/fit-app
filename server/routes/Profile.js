@@ -144,9 +144,18 @@ router.get("/me", validateToken, async (req, res) => {
     },
     order: [["createdAt", "DESC"]],
   });
+
+  const nutritionPlan = await NutritionPlan.findOne({
+    where: {
+      userId: userId,
+      isActive: true,
+    },
+    order: [["createdAt", "DESC"]],
+  });
   res.json({
     profile: profile,
     workoutPlan: activePlan,
+    nutritionPlan: nutritionPlan,
   });
 });
 
