@@ -39,7 +39,13 @@ router.post("/", validateToken, async (req, res) => {
       history: history,
       query: query,
     };
+
+    console.log("🤖 AI İSTEĞİ GÖNDERİLİYOR..."); // LOG 1
     const aiResult = await getNutritionResponse(nutritionPayload);
+
+    // --- LOG 2: BURASI KRİTİK, AI NE DÖNÜYOR GÖRELİM ---
+    console.log("📦 AI CEVABI (HAM VERİ):", JSON.stringify(aiResult, null, 2));
+    // ----------------------------------------------------
 
     let aiMessage = "Beslenme uzmanına ulaşılamadı.";
     let dietPlan = null;
@@ -48,7 +54,10 @@ router.post("/", validateToken, async (req, res) => {
     if (aiResult) {
       aiMessage = aiResult.chat_message;
 
+      // Plan kontrolü
       if (aiResult.diet_plan && aiResult.diet_plan.length > 0) {
+        console.log("✅ DİYET PLANI BULUNDU! Veritabanına kaydediliyor..."); // LOG 3
+
         dietPlan = aiResult.diet_plan;
         await NutritionPlan.update({ isActive: false }, { where: { userId } });
 
@@ -57,6 +66,9 @@ router.post("/", validateToken, async (req, res) => {
           planData: dietPlan,
           isActive: true,
         });
+        console.log("💾 Veritabanı kaydı başarılı."); // LOG 4
+      } else {
+        console.log("⚠️ AI cevap döndü ama içinde 'diet_plan' yok."); // LOG 5
       }
 
       if (aiResult.recipe_cards && aiResult.recipe_cards.length > 0) {
@@ -70,6 +82,7 @@ router.post("/", validateToken, async (req, res) => {
       message: aiMessage,
       recipeCards: recipeCards,
     });
+
     res.json({
       success: true,
       userMessage: query,
@@ -78,6 +91,7 @@ router.post("/", validateToken, async (req, res) => {
       recipeCards: recipeCards,
     });
   } catch (err) {
+    console.error("❌ HATA:", err); // LOG 6
     res.status(500).json({ error: err ? err.message : "Bir hata oluştu" });
   }
 });

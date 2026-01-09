@@ -76,23 +76,38 @@ const NutritionScreen = () => {
   }, []);
 
   // --- SEÇİLİ GÜNÜN VERİSİNİ BUL (KRİTİK DÜZELTME BURADA) ---
+  // --- SEÇİLİ GÜNÜN VERİSİNİ BUL (GÜNCELLENDİ) ---
   const currentDayData = useMemo(() => {
     if (!dietPlan || !Array.isArray(dietPlan) || dietPlan.length === 0)
       return null;
 
-    const dayObj = daysMap.find((d) => d.en === activeDay);
-    const trName = dayObj ? dayObj.tr : "";
+    // Aktif günün indeksini bul (Pazartesi=0, Salı=1...)
+    const dayIndex = daysMap.findIndex((d) => d.en === activeDay);
+    const dayObj = daysMap[dayIndex];
+    const trName = dayObj ? dayObj.tr : ""; // "Pazartesi"
 
-    // Gelen veri formatı: [{gun: "Pazartesi", name: "Yemek", ...}, ...]
-    // Bu yüzden 'filter' ile o güne ait tüm yemekleri buluyoruz.
-    const dayMealsRaw = dietPlan.filter((item) => item.gun === trName);
+    // Verideki "1. Gün", "2. Gün" formatını oluştur
+    const genericDayName = `${dayIndex + 1}. Gün`;
+
+    // Hem Türkçe isme (Pazartesi) hem de Sayısal isme (1. Gün) göre filtrele
+    const dayMealsRaw = dietPlan.filter((item) => {
+      // Gelen veri bazen "1. Gün" bazen "1.Gün" olabilir, boşlukları temizleyerek kontrol edelim
+      const cleanGun = item.gun ? item.gun.replace(/\s/g, "") : "";
+      const cleanGeneric = genericDayName.replace(/\s/g, "");
+
+      return (
+        item.gun === trName ||
+        cleanGun === cleanGeneric ||
+        item.gun.includes(trName)
+      );
+    });
 
     if (dayMealsRaw.length === 0) return null;
 
-    // Veriyi UI'ın beklediği formata dönüştürüyoruz (Mapping)
+    // Formatlama (Aynen devam)
     const formattedMeals = dayMealsRaw.map((m) => {
-      // "Kcal 400" -> 400 (Sayıya çevirme)
       let calVal = 0;
+      // Kalori "Kcal 350" gibi gelmiş, sadece sayıyı alalım
       if (typeof m.calories === "string") {
         calVal = parseInt(m.calories.replace(/\D/g, "")) || 0;
       } else {
@@ -100,13 +115,13 @@ const NutritionScreen = () => {
       }
 
       return {
-        meal_name: m.name, // 'name' -> 'meal_name'
+        meal_name: m.name,
         calories: calVal,
-        protein: m.protein || 0, // Veride yoksa 0
+        protein: m.protein || 0,
         carbs: m.carbs || 0,
         fat: m.fat || 0,
-        items: m.items ||
-          m.ingredients || [`${m.category || "Lezzetli bir öğün"}`], // Malzeme yoksa kategori yazsın
+        // Malzeme listesi yoksa kategori adını yaz
+        items: m.items || m.ingredients || [`${m.category || "Öğün"}`],
       };
     });
 
