@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 // API Fonksiyonları
 import { sendMessageToAI, getChatHistory } from "../services/api";
 
@@ -21,14 +22,40 @@ export default function Assistant() {
 
   // --- 1. SAYFA YÜKLENİNCE: GEÇMİŞİ VE PROFİLİ ÇEK ---
   useEffect(() => {
-    // A. Kullanıcı Adı
-    const storedUser = localStorage.getItem("userProfile");
-    if (storedUser) {
+    // A. Kullanıcı Adını Backend'den Çek
+    const fetchUserProfile = async () => {
       try {
-        const parsed = JSON.parse(storedUser);
-        if (parsed.fullname) setUserName(parsed.fullname);
-      } catch (e) {}
-    }
+        const token = localStorage.getItem("userToken");
+        console.log("🔑 Token:", token);
+        const response = await axios.get("http://localhost:5002/profile/me", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        console.log("👤 Profile Response:", response.data);
+        
+        // Önce user.username'i dene
+        if (response.data.user && response.data.user.username) {
+          console.log("✅ User.username kullanılıyor:", response.data.user.username);
+          setUserName(response.data.user.username);
+        } 
+        // Yoksa profile.fullname'i dene
+        else if (response.data.profile && response.data.profile.fullname) {
+          console.log("✅ Profile.fullname kullanılıyor:", response.data.profile.fullname);
+          setUserName(response.data.profile.fullname);
+        }
+      } catch (error) {
+        console.error("❌ Kullanıcı profili yükleme hatası:", error);
+        // Fallback: localStorage'dan dene
+        const storedUser = localStorage.getItem("userProfile");
+        if (storedUser) {
+          try {
+            const parsed = JSON.parse(storedUser);
+            if (parsed.fullname) setUserName(parsed.fullname);
+          } catch (e) {}
+        }
+      }
+    };
+    
+    fetchUserProfile();
 
     // B. Chat Geçmişi
     const loadHistory = async () => {
