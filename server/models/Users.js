@@ -22,6 +22,14 @@ module.exports = (sequelize, DataTypes) => {
         len: { args: [8, 255], msg: "Password must be at least 8 chars" },
       },
     },
+    resetPasswordToken: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    resetPasswordExpires: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   });
 
   Users.associate = (models) => {
