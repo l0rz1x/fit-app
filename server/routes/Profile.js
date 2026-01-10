@@ -153,6 +153,7 @@ router.get("/me", validateToken, async (req, res) => {
     order: [["createdAt", "DESC"]],
   });
   res.json({
+    user: req.user,
     profile: profile,
     workoutPlan: activePlan,
     nutritionPlan: nutritionPlan,

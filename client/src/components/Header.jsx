@@ -133,12 +133,6 @@ export default function Header({ theme, toggleTheme }) {
           <>
             <div className="flex items-center gap-3">
               <button
-                onClick={() => navigate("/pricing")}
-                className={getNavLinkClass("/pricing")}
-              >
-                Pricing
-              </button>
-              <button
                 onClick={() => navigate("/contact")}
                 className={getNavLinkClass("/contact")}
               >
