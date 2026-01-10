@@ -9,7 +9,6 @@ import Login from "./pages/LoginScreen";
 import Register from "./pages/RegisterScreen"; // Register sayfan varsa
 import Dashboard from "./pages/Dashboard";
 import UserProfile from "./pages/UserProfile"; // Profil oluşturma sayfan
-import Pricing from "./pages/Pricing";
 import Contact from "./pages/Contact";
 import Workout from "./pages/Workout";
 import MealPlan from "./pages/MealPlan";
@@ -55,7 +54,6 @@ function App() {
             <Route path="/" element={<WelcomeScreen />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/pricing" element={<Pricing />} />
             <Route path="/contact" element={<Contact />} />
 
             {/* Korumalı Rotalar (Giriş yaptıktan sonra gidilenler) */}
