@@ -167,7 +167,9 @@ const LoginScreen = () => {
               </label>
 
               <p className="text-sm font-normal leading-normal text-right text-subtle-light dark:text-subtle-dark underline hover:text-primary dark:hover:text-primary cursor-pointer transition-colors">
-                Parolanızı mı unuttunuz?
+                <Link to="/forgot-password">
+                  Şifremi Unuttum
+                </Link>
               </p>
 
               <div className="flex flex-col gap-4 items-center mt-2">

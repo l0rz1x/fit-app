@@ -15,6 +15,8 @@ import MealPlan from "./pages/MealPlan";
 import ScrollToTop from "./components/ScrollToTop";
 import NotFound from "./pages/NotFound"; // 404 sayfasi
 import Assistant from "./pages/Assistant"; // Yapay zeka asistan sayfası
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   // --- TEMA AYARLARI ---
@@ -55,6 +57,8 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
 
             {/* Korumalı Rotalar (Giriş yaptıktan sonra gidilenler) */}
             <Route path="/workout" element={<Workout />} />
