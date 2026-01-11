@@ -108,10 +108,10 @@ const RegisterScreen = () => {
                 {/* Title Section */}
                 <div className="mb-8 flex flex-col gap-3 text-center lg:text-left">
                   <p className="text-3xl font-black leading-tight tracking-[-0.033em] text-text-light dark:text-text-dark sm:text-4xl">
-                    Start Your Smart Health Journey
+                    Akıllı Sağlık Yolculuğunuza Başlayın
                   </p>
                   <p className="text-base font-normal leading-normal text-subtle-light dark:text-subtle-dark">
-                    Get custom meal and fitness plans designed just for you.
+                    Size özel hazırlanmış beslenme ve fitness planları edinin.
                   </p>
                 </div>
 
@@ -128,7 +128,7 @@ const RegisterScreen = () => {
                   </div>
                   <div className="relative flex justify-center text-sm">
                     <span className="bg-background-light dark:bg-background-dark px-2 text-subtle-light dark:text-subtle-dark">
-                      OR
+                      Başlayın
                     </span>
                   </div>
                 </div>
@@ -137,7 +137,7 @@ const RegisterScreen = () => {
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                   <label className="flex flex-col">
                     <p className="pb-2 text-base font-medium leading-normal text-text-light dark:text-text-dark">
-                      Email
+                      E-posta
                     </p>
                     <input
                       name="email"
@@ -146,13 +146,13 @@ const RegisterScreen = () => {
                       onChange={handleInputChange}
                       required
                       className="form-input h-12 w-full rounded-lg border border-border-light bg-input-bg-light p-[15px] text-base text-text-light placeholder:text-subtle-light focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 dark:border-border-dark dark:bg-input-bg-dark dark:text-text-dark dark:placeholder:text-subtle-dark dark:focus:border-primary"
-                      placeholder="Enter your email address"
+                      placeholder="E-posta adresinizi girin"
                     />
                   </label>
 
                   <label className="flex flex-col">
                     <p className="pb-2 text-base font-medium leading-normal text-text-light dark:text-text-dark">
-                      Password
+                      Şifre
                     </p>
                     <input
                       name="password"
@@ -161,13 +161,13 @@ const RegisterScreen = () => {
                       onChange={handleInputChange}
                       required
                       className="form-input h-12 w-full rounded-lg border border-border-light bg-input-bg-light p-[15px] text-base text-text-light placeholder:text-subtle-light focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 dark:border-border-dark dark:bg-input-bg-dark dark:text-text-dark dark:placeholder:text-subtle-dark dark:focus:border-primary"
-                      placeholder="Create a password"
+                      placeholder="Şifrenizi oluşturun"
                     />
                   </label>
 
                   <label className="flex flex-col">
                     <p className="pb-2 text-base font-medium leading-normal text-text-light dark:text-text-dark">
-                      Confirm Password
+                      Şifre Tekrarı
                     </p>
                     <input
                       name="confirmPassword"
@@ -176,7 +176,7 @@ const RegisterScreen = () => {
                       onChange={handleInputChange}
                       required
                       className="form-input h-12 w-full rounded-lg border border-border-light bg-input-bg-light p-[15px] text-base text-text-light placeholder:text-subtle-light focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 dark:border-border-dark dark:bg-input-bg-dark dark:text-text-dark dark:placeholder:text-subtle-dark dark:focus:border-primary"
-                      placeholder="Confirm your password"
+                      placeholder="Şifrenizi onaylayın"
                     />
                   </label>
 
@@ -193,20 +193,22 @@ const RegisterScreen = () => {
                       className="text-sm text-subtle-light dark:text-subtle-dark select-none"
                       htmlFor="terms-checkbox"
                     >
-                      By signing up, you agree to our{" "}
+                      Kayıt olarak, {" "}
                       <Link
                         className="font-medium text-primary underline hover:text-green-600 transition-colors"
                         to="/terms"
                       >
-                        Terms of Service
+                        Hizmet Şartları
                       </Link>{" "}
-                      and{" "}
+                      ve{" "}
                       <Link
                         className="font-medium text-primary underline hover:text-green-600 transition-colors"
                         to="/privacy"
                       >
-                        Privacy Policy
+                        Gizlilik Politikası
                       </Link>
+
+                      'nı kabul etmiş olursunuz.
                       .
                     </label>
                   </div>
@@ -216,7 +218,7 @@ const RegisterScreen = () => {
                     className="mt-4 flex h-12 w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-primary px-5 text-base font-bold text-white shadow-md shadow-primary/20 transition-all hover:opacity-90 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <span className="truncate">
-                      {isLoading ? "Creating Account..." : "Create Account"}
+                      {isLoading ? "Hesap Oluşturuluyor..." : "Hesap Oluştur"}
                     </span>
                   </button>
                 </form>

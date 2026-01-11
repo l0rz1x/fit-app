@@ -60,11 +60,10 @@ const WelcomeScreen = () => {
                   <div className="flex flex-col gap-8 @[864px]:justify-center @[864px]:w-1/2">
                     <div className="flex flex-col gap-4 text-left">
                       <h1 className="text-gray-900 dark:text-white text-4xl font-black leading-tight tracking-[-0.033em] @[480px]:text-5xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em]">
-                        Your Smart Nutrition & Fitness Planner
+                        Akıllı Beslenme ve Fitness Planlayıcınız
                       </h1>
                       <h2 className="text-gray-700 dark:text-gray-300 text-base font-normal leading-relaxed @[480px]:text-lg @[480px]:font-normal @[480px]:leading-relaxed">
-                        Personalized meal and workout plans created from the
-                        ingredients you already have. Eat smarter, train better.
+                        Sahip olduğunuz malzemelerden oluşturulmuş kişiselleştirilmiş yemek ve egzersiz planları. Daha akıllıca beslenin, daha iyi antrenman yapın.
                       </h2>
                     </div>
                     <div className="flex flex-col gap-4">
@@ -79,7 +78,7 @@ const WelcomeScreen = () => {
                             </span>
                           </div>
                           <h2 className="text-gray-800 dark:text-gray-200 text-sm font-bold leading-tight">
-                            AI-Powered Personalization
+                            Yapay Zeka Destekli Kişiselleştirme
                           </h2>
                         </div>
                         <div className="flex flex-1 gap-3 items-center">
@@ -92,7 +91,7 @@ const WelcomeScreen = () => {
                             </span>
                           </div>
                           <h2 className="text-gray-800 dark:text-gray-200 text-sm font-bold leading-tight">
-                            Reduce Food Waste
+                            Sürdürülebilir Gıda Tüketimi 
                           </h2>
                         </div>
                         <div className="flex flex-1 gap-3 items-center">
@@ -105,13 +104,13 @@ const WelcomeScreen = () => {
                             </span>
                           </div>
                           <h2 className="text-gray-800 dark:text-gray-200 text-sm font-bold leading-tight">
-                            Achieve Your Goals
+                            Hedeflerinize Ulaşın
                           </h2>
                         </div>
                       </div>
                     </div>
                     <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary text-gray-900 dark:text-gray-900 text-base font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity">
-                      <span className="truncate">Get Started for Free</span>
+                      <span className="truncate">Ücretsiz Başlayın</span>
                     </button>
                   </div>
                   <div className="w-full @[864px]:w-1/2">
@@ -129,7 +128,7 @@ const WelcomeScreen = () => {
               {/* Trusted By Section */}
               <div className="flex flex-col gap-10 px-4 py-10 @container">
                 <h4 className="text-gray-600 dark:text-gray-400 text-sm font-bold leading-normal tracking-[0.015em] text-center">
-                  TRUSTED BY THOUSANDS OF HEALTH ENTHUSIASTS
+                  BİNLERCE SAĞLIK TÜKETİCİSİ TARAFINDAN GÜVENİLİR
                 </h4>
                 <div className="grid grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-3 p-4">
                   {[1, 2, 3, 4, 5].map((num) => (

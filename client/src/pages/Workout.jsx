@@ -5,13 +5,13 @@ import { getUserProfile } from "../services/api";
 
 // --- SABİTLER VE YARDIMCI FONKSİYONLAR ---
 const days = [
-  { short: "Mon", full: "Monday", tr: "Pazartesi" },
-  { short: "Tue", full: "Tuesday", tr: "Salı" },
-  { short: "Wed", full: "Wednesday", tr: "Çarşamba" },
-  { short: "Thu", full: "Thursday", tr: "Perşembe" },
-  { short: "Fri", full: "Friday", tr: "Cuma" },
-  { short: "Sat", full: "Saturday", tr: "Cumartesi" },
-  { short: "Sun", full: "Sunday", tr: "Pazar" },
+  { short: "Pazartesi", full: "Monday", tr: "Pazartesi" },
+  { short: "Salı", full: "Tuesday", tr: "Salı" },
+  { short: "Çarşamba", full: "Wednesday", tr: "Çarşamba" },
+  { short: "Perşembe", full: "Thursday", tr: "Perşembe" },
+  { short: "Cuma", full: "Friday", tr: "Cuma" },
+  { short: "Cumartesi", full: "Saturday", tr: "Cumartesi" },
+  { short: "Pazar", full: "Sunday", tr: "Pazar" },
 ];
 
 const parseSetRep = (str) => {
@@ -149,7 +149,7 @@ const WorkoutScreen = () => {
               onClick={() => navigate("/userprofile")}
               className="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-lg shadow-emerald-500/30 text-sm"
             >
-              Create Plan
+              Plan Oluştur
             </button>
           )}
         </div>

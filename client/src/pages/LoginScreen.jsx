@@ -99,10 +99,10 @@ const LoginScreen = () => {
                 </h1>
               </div>
               <h2 className="text-4xl font-black leading-tight tracking-tight text-text-light dark:text-text-dark">
-                Welcome Back
+                Tekrar hoşgeldiniz
               </h2>
               <p className="text-subtle-light dark:text-subtle-dark">
-                Ready to achieve your goals?
+                Hedeflerinize ulaşmaya hazır mısınız?
               </p>
             </div>
 
@@ -120,7 +120,7 @@ const LoginScreen = () => {
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <label className="flex flex-col w-full">
                 <p className="text-base font-medium pb-2 text-text-light dark:text-text-dark">
-                  Email or Username
+                  E-posta 
                 </p>
                 <div className="flex w-full flex-1 items-stretch rounded-lg group focus-within:ring-2 focus-within:ring-primary/50 transition-shadow">
                   <div className="flex items-center justify-center pl-4 pr-2 border border-r-0 border-border-light dark:border-border-dark bg-input-bg-light dark:bg-input-bg-dark rounded-l-lg text-subtle-light dark:text-subtle-dark">
@@ -133,14 +133,14 @@ const LoginScreen = () => {
                     value={formData.email}
                     onChange={handleInputChange}
                     className="flex w-full min-w-0 flex-1 resize-none overflow-hidden text-text-light dark:text-text-dark focus:outline-none border border-l-0 border-border-light dark:border-border-dark bg-input-bg-light dark:bg-input-bg-dark h-14 placeholder:text-subtle-light dark:placeholder:text-subtle-dark p-[15px] rounded-r-lg text-base font-normal leading-normal"
-                    placeholder="Enter your email"
+                    placeholder="E-postanızı girin"
                   />
                 </div>
               </label>
 
               <label className="flex flex-col w-full">
                 <p className="text-base font-medium pb-2 text-text-light dark:text-text-dark">
-                  Password
+                  Şifre
                 </p>
                 <div className="flex w-full flex-1 items-stretch rounded-lg group focus-within:ring-2 focus-within:ring-primary/50 transition-shadow">
                   <div className="flex items-center justify-center pl-4 pr-2 border border-r-0 border-border-light dark:border-border-dark bg-input-bg-light dark:bg-input-bg-dark rounded-l-lg text-subtle-light dark:text-subtle-dark">
@@ -153,7 +153,7 @@ const LoginScreen = () => {
                     value={formData.password}
                     onChange={handleInputChange}
                     className="flex w-full min-w-0 flex-1 resize-none overflow-hidden text-text-light dark:text-text-dark focus:outline-none border-y border-border-light dark:border-border-dark bg-input-bg-light dark:bg-input-bg-dark h-14 placeholder:text-subtle-light dark:placeholder:text-subtle-dark p-[15px] text-base font-normal leading-normal border-x-0"
-                    placeholder="Enter your password"
+                    placeholder="Şifrenizi girin"
                   />
                   <div
                     onClick={togglePasswordVisibility}
@@ -167,7 +167,7 @@ const LoginScreen = () => {
               </label>
 
               <p className="text-sm font-normal leading-normal text-right text-subtle-light dark:text-subtle-dark underline hover:text-primary dark:hover:text-primary cursor-pointer transition-colors">
-                Forgot Password?
+                Parolanızı mı unuttunuz?
               </p>
 
               <div className="flex flex-col gap-4 items-center mt-2">
@@ -177,16 +177,16 @@ const LoginScreen = () => {
                   className="flex w-full min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-green-600 transition-colors shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span className="truncate">
-                    {isLoading ? "Logging In..." : "Log In"}
+                    {isLoading ? "Giriş Yapılıyor..." : "Giriş Yap"}
                   </span>
                 </button>
                 <p className="text-sm font-normal leading-normal text-center text-subtle-light dark:text-subtle-dark">
-                  Don't have an account?{" "}
+                  Henüz üye değil misiniz?{" "}
                   <Link
                     className="font-bold underline text-primary hover:text-orange-accent transition-colors"
                     to="/register"
                   >
-                    Sign Up
+                    Üye ol
                   </Link>
                 </p>
               </div>
