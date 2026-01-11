@@ -28,18 +28,24 @@ export default function Assistant() {
         const token = localStorage.getItem("userToken");
         console.log("🔑 Token:", token);
         const response = await axios.get("http://localhost:5002/profile/me", {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
         });
         console.log("👤 Profile Response:", response.data);
-        
+
         // Önce user.username'i dene
         if (response.data.user && response.data.user.username) {
-          console.log("✅ User.username kullanılıyor:", response.data.user.username);
+          console.log(
+            "✅ User.username kullanılıyor:",
+            response.data.user.username
+          );
           setUserName(response.data.user.username);
-        } 
+        }
         // Yoksa profile.fullname'i dene
         else if (response.data.profile && response.data.profile.fullname) {
-          console.log("✅ Profile.fullname kullanılıyor:", response.data.profile.fullname);
+          console.log(
+            "✅ Profile.fullname kullanılıyor:",
+            response.data.profile.fullname
+          );
           setUserName(response.data.profile.fullname);
         }
       } catch (error) {
@@ -54,7 +60,7 @@ export default function Assistant() {
         }
       }
     };
-    
+
     fetchUserProfile();
 
     // B. Chat Geçmişi
@@ -472,7 +478,10 @@ export default function Assistant() {
                         {msg.text}
                       </p>{" "}
                       {/* Tarifin açıklaması varsa */}
-                      <button className="w-full py-2.5 bg-primary/10 hover:bg-primary/20 text-primary font-bold text-sm rounded-lg transition-colors flex items-center justify-center gap-2">
+                      <button
+                        onClick={() => navigate("/mealplan")}
+                        className="w-full py-2.5 bg-primary/10 hover:bg-primary/20 text-primary font-bold text-sm rounded-lg transition-colors flex items-center justify-center gap-2"
+                      >
                         <span className="material-symbols-outlined text-lg">
                           restaurant_menu
                         </span>
