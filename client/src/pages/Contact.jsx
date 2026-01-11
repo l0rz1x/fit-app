@@ -49,11 +49,10 @@ export default function Contact() {
                     24/7 Support
                   </div>
                   <h1 className="text-4xl md:text-5xl font-black tracking-tight leading-tight mb-4">
-                    Let's hit your goals together.
+                    Hedeflerinize birlikte ulaşalım.
                   </h1>
                   <p className="text-gray-200 text-lg max-w-sm leading-relaxed">
-                    Whether you're tracking macros or planning your next
-                    marathon, we're here to optimize your nutrition journey.
+                    İster makrolarınızı takip ediyor olun, ister maraton koşmayı planlıyor olun; beslenme yolculuğunuzu en iyi hale getirmek için buradayızs
                   </p>
                 </div>
 
@@ -64,10 +63,10 @@ export default function Contact() {
                     </div>
                     <div>
                       <p className="text-xs text-gray-300 font-medium uppercase tracking-wider">
-                        Email us directly
+                        Bize doğrudan ulaşın
                       </p>
                       <p className="font-semibold text-white">
-                        support@smartnutrition.com
+                        destek@akillibeslenme.com
                       </p>
                     </div>
                   </div>
@@ -107,11 +106,11 @@ export default function Contact() {
               <div className="max-w-lg w-full mx-auto">
                 <div className="mb-10">
                   <h2 className="text-3xl font-bold text-text-main-light dark:text-text-main-dark mb-2 tracking-tight">
-                    Get in touch
+                    İletişime geçin
                   </h2>
                   <p className="text-text-secondary-light dark:text-text-secondary-dark">
-                    Have questions about your plan? Our team typically responds
-                    within 24 hours.
+                    Planınızla ilgili sorularınız mı var? Ekibimiz genellikle 24 saat içinde yanıt verir.
+                    
                   </p>
                 </div>
 
@@ -123,7 +122,7 @@ export default function Contact() {
                         className="text-sm font-semibold text-text-main-light dark:text-text-main-dark"
                         htmlFor="fullName"
                       >
-                        Full Name
+                        Ad Soyad
                       </label>
                       <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-text-secondary-light dark:text-text-secondary-dark">
@@ -146,7 +145,7 @@ export default function Contact() {
                         className="text-sm font-semibold text-text-main-light dark:text-text-main-dark"
                         htmlFor="email"
                       >
-                        Email Address
+                       E-posta adresi
                       </label>
                       <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-text-secondary-light dark:text-text-secondary-dark">
@@ -172,7 +171,7 @@ export default function Contact() {
                       className="text-sm font-semibold text-text-main-light dark:text-text-main-dark"
                       htmlFor="subject"
                     >
-                      Subject
+                      Konu
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-text-secondary-light dark:text-text-secondary-dark">
@@ -187,12 +186,12 @@ export default function Contact() {
                         onChange={handleChange}
                       >
                         <option disabled value="">
-                          Select a topic
+                          Bir konu seçiniz
                         </option>
-                        <option value="plans">Nutrition Plan Inquiry</option>
-                        <option value="technical">Technical Support</option>
-                        <option value="billing">Billing & Subscription</option>
-                        <option value="other">Other</option>
+                        <option value="plans">Beslenme Planı Sorgulama</option>
+                        <option value="technical">Teknik Destek</option>
+                        <option value="billing">Abonelik ve Ücretlendirme</option>
+                        <option value="other">Diğer</option>
                       </select>
                       <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-text-secondary-light dark:text-text-secondary-dark">
                         <span className="material-symbols-outlined text-[20px]">
@@ -208,12 +207,12 @@ export default function Contact() {
                       className="text-sm font-semibold text-text-main-light dark:text-text-main-dark"
                       htmlFor="message"
                     >
-                      How can we help?
+                      Nasıl yardımcı olabiliriz?
                     </label>
                     <textarea
                       className="w-full p-4 bg-background-light dark:bg-background-dark border border-input-border dark:border-border-dark rounded-xl focus:ring-2 focus:ring-primary focus:border-primary dark:focus:border-primary outline-none transition-all placeholder:text-gray-400 dark:placeholder:text-gray-600 text-text-main-light dark:text-text-main-dark resize-none"
                       id="message"
-                      placeholder="Tell us more about your inquiry..."
+                      placeholder="Mesajınızı buraya yazın..."
                       rows="4"
                       value={formData.message}
                       onChange={handleChange}
@@ -225,7 +224,7 @@ export default function Contact() {
                     className="group w-full bg-primary hover:bg-primary-hover text-white font-bold text-base py-3.5 rounded-xl shadow-lg shadow-primary/30 transition-all duration-300 transform hover:-translate-y-0.5 flex items-center justify-center gap-2"
                     type="submit"
                   >
-                    Send Message
+                    Mesaj Gönder
                     <span className="material-symbols-outlined text-[20px] transition-transform duration-300 group-hover:translate-x-1">
                       arrow_forward
                     </span>

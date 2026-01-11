@@ -275,25 +275,25 @@ export default function UserProfile() {
                         val: "sedentary",
                         icon: "chair",
                         label: "Hareketsiz",
-                        sub: "Masa başı iş / Az hareket",
+                        sub: "Günümün çoğu oturarak geçiyor, ekstra egzersiz yapmıyorum.",
                       },
                       {
                         val: "light",
                         icon: "directions_walk",
                         label: "Az Hareketli",
-                        sub: "Haftada 1-3 gün egzersiz",
+                        sub: "Gün içinde hareket halindeyim ama düzenli spor yapmıyorum.",
                       },
                       {
                         val: "moderate",
                         icon: "fitness_center",
                         label: "Orta Hareketli",
-                        sub: "Haftada 3-5 gün spor",
+                        sub: "Aktif bir yaşamım var ve düzenli olarak spora vakit ayırıyorum.",
                       },
                       {
                         val: "active",
                         icon: "sprint",
                         label: "Çok Hareketli",
-                        sub: "Haftada 6-7 gün spor",
+                        sub: "Profesyonel sporcu temposunda veya çok ağır bir tempoda yaşıyorum.",
                       },
                     ].map((item) => (
                       <label

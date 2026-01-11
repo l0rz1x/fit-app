@@ -80,19 +80,19 @@ export default function Header({ theme, toggleTheme }) {
               onClick={() => navigate("/workout")}
               className={getNavLinkClass("/workout")}
             >
-              Workout
+              Egzersiz Planım
             </button>
             <button
               onClick={() => navigate("/mealplan")}
               className={getNavLinkClass("/mealplan")}
             >
-              Meal Plan
+              Beslenme Planım
             </button>
             <button
               onClick={() => navigate("/dashboard")}
               className={getNavLinkClass("/dashboard")}
             >
-              Dashboard
+              Günlük Rapor
             </button>
             <button
               onClick={() => navigate("/userprofile")}
@@ -104,7 +104,7 @@ export default function Header({ theme, toggleTheme }) {
               onClick={() => navigate("/assistant")}
               className={getNavLinkClass("/assistant")}
             >
-              Chatbot
+              AI Danışman
             </button>
 
             {/* Tema Butonu */}
@@ -136,7 +136,7 @@ export default function Header({ theme, toggleTheme }) {
                 onClick={() => navigate("/contact")}
                 className={getNavLinkClass("/contact")}
               >
-                Contact
+                İletişim
               </button>
             </div>
 
@@ -156,13 +156,13 @@ export default function Header({ theme, toggleTheme }) {
                 onClick={() => navigate("/login")}
                 className="flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-primary/20 dark:bg-primary/20 text-gray-800 dark:text-white text-sm font-bold hover:bg-primary/30 dark:hover:bg-primary/30 transition-colors"
               >
-                Log In
+                Giriş Yap
               </button>
               <button
                 onClick={() => navigate("/register")}
                 className="flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-primary text-gray-900 dark:text-gray-900 text-sm font-bold hover:opacity-90 transition-opacity"
               >
-                Sign Up
+                Üye Ol
               </button>
             </div>
           </>

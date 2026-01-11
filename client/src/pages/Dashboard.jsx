@@ -248,7 +248,7 @@ export default function Dashboard() {
 
               {/* Gün Seçici - Hem Nutrition hem Workout için */}
               <div className="bg-white dark:bg-white/5 rounded-xl p-4 shadow-sm border border-border-light dark:border-border-dark">
-                <h3 className="text-lg font-semibold mb-3">Select Day</h3>
+                <h3 className="text-lg font-semibold mb-3">Gün Seç</h3>
                 <div className="flex gap-2 overflow-x-auto pb-2">
                   {daysList.map((day) => (
                     <button
@@ -273,7 +273,7 @@ export default function Dashboard() {
                   {/* Today's Nutrition Plan */}
                   <div className="bg-white dark:bg-white/5 rounded-xl p-6 shadow-sm border border-border-light dark:border-border-dark">
                     <h2 className="text-2xl font-bold leading-tight tracking-[-0.015em] pb-4">
-                      Nutrition Plan - {selectedDay}
+                      Beslenme Planı - {selectedDay}
                     </h2>
                     
                     <div
@@ -321,7 +321,7 @@ export default function Dashboard() {
                   {/* Today's Workout */}
                   <div className="bg-white dark:bg-white/5 rounded-xl p-6 shadow-sm border border-border-light dark:border-border-dark">
                     <h2 className="text-2xl font-bold leading-tight tracking-[-0.015em] pb-4">
-                      Workout Plan - {selectedDay}
+                      Egzersiz Planı - {selectedDay}
                     </h2>
                     {dashboardData?.workout?.exercises && dashboardData.workout.exercises.length > 0 ? (
                       <div className="flex flex-col gap-3">
@@ -371,8 +371,8 @@ export default function Dashboard() {
                       </div>
                     ) : (
                       <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                        <p className="text-lg">No workout scheduled for {selectedDay}</p>
-                        <p className="text-sm mt-2">Create a workout plan in the Workout section</p>
+                        <p className="text-lg">Planlanmış bir egzersiz yok -  {selectedDay}</p>
+                        <p className="text-sm mt-2">Egzersiz bölümünde bir egzersiz planı oluşturun.</p>
                       </div>
                     )}
                   </div>
@@ -380,11 +380,11 @@ export default function Dashboard() {
                   {/* Water Intake */}
                   <div className="bg-white dark:bg-white/5 rounded-xl p-6 shadow-sm border border-border-light dark:border-border-dark">
                     <h2 className="text-2xl font-bold leading-tight tracking-[-0.015em] pb-4">
-                      Water Intake
+                      Su Tüketimi
                     </h2>
                     <div className="flex flex-col gap-4">
                       <div className="flex items-center justify-between">
-                        <span className="text-lg font-semibold">{waterGlasses} / {waterGoal} glasses</span>
+                        <span className="text-lg font-semibold">{waterGlasses} / {waterGoal} bardak</span>
                         <span className="text-sm text-gray-500 dark:text-gray-400">{Math.round((waterGlasses / waterGoal) * 100)}%</span>
                       </div>
                       
@@ -421,7 +421,7 @@ export default function Dashboard() {
                         onClick={() => setWaterGlasses(0)}
                         className="mt-2 px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
                       >
-                        Reset
+                        Sıfırla
                       </button>
                     </div>
                   </div>
@@ -431,7 +431,7 @@ export default function Dashboard() {
                 <div className="lg:col-span-1 flex flex-col gap-8">
                   <div className="bg-white dark:bg-white/5 rounded-xl p-6 shadow-sm border border-border-light dark:border-border-dark">
                     <h3 className="text-2xl font-bold leading-tight tracking-[-0.015em] pb-6">
-                      Your Progress Today
+                      Bugünkü ilerlemeniz
                     </h3>
                     <div className="flex flex-col gap-8">
                       {/* Calories Progress */}
@@ -472,7 +472,7 @@ export default function Dashboard() {
                           </div>
                         </div>
                         <div>
-                          <p className="font-bold text-lg">Calories</p>
+                          <p className="font-bold text-lg">Kalori</p>
                           <p className="text-sm text-gray-500 dark:text-gray-400">
                             {consumedCalories} / {totalCalories} kcal
                           </p>
@@ -516,9 +516,9 @@ export default function Dashboard() {
                           </div>
                         </div>
                         <div>
-                          <p className="font-bold text-lg">Workout</p>
+                          <p className="font-bold text-lg">Egzersiz</p>
                           <p className="text-sm text-gray-500 dark:text-gray-400">
-                            {burnedCalories} / {totalWorkoutCalories} kcal burned
+                            {burnedCalories} / {totalWorkoutCalories} kcal yakıldı
                           </p>
                         </div>
                       </div>
@@ -560,9 +560,9 @@ export default function Dashboard() {
                           </div>
                         </div>
                         <div>
-                          <p className="font-bold text-lg">Water Intake</p>
+                          <p className="font-bold text-lg">Su Tüketimi</p>
                           <p className="text-sm text-gray-500 dark:text-gray-400">
-                            {waterGlasses} / {waterGoal} glasses
+                            {waterGlasses} / {waterGoal} bardak
                           </p>
                         </div>
                       </div>
@@ -604,7 +604,7 @@ export default function Dashboard() {
                           </div>
                         </div>
                         <div>
-                          <p className="font-bold text-lg">Steps</p>
+                          <p className="font-bold text-lg">Adım</p>
                           <p className="text-sm text-gray-500 dark:text-gray-400">
                             4,500 / 10,000
                           </p>
@@ -619,9 +619,7 @@ export default function Dashboard() {
         </main>
 
         {/* FAB */}
-        <button className="fixed bottom-8 right-8 z-40 flex h-16 w-16 cursor-pointer items-center justify-center rounded-full bg-primary text-white shadow-lg hover:bg-primary/90 transition-all">
-          <span className="material-symbols-outlined text-3xl">add</span>
-        </button>
+        
       </div>
     </div>
   );

@@ -23,31 +23,80 @@ const NutritionScreen = () => {
     { en: "Sunday", tr: "Pazar" },
   ];
 
-  // --- YARDIMCI: Resim Atayıcı ---
-  const getMealImage = (mealName) => {
-    const lowerName = mealName?.toLowerCase() || "";
+  // --- AKILLI RESİM ATAYICI (Fallback Sistemi) ---
+  // Eğer veritabanından resim gelmezse, yemek ismine bakıp buradan seçer.
+  const getMealImage = (mealData) => {
+    // 1. Önce veritabanından/AI'dan resim gelmiş mi bak?
+    if (mealData.image && mealData.image.startsWith("http")) {
+      return mealData.image;
+    }
+
+    // 2. Gelmemişse ismine göre biz atayalım
+    const lowerName = (mealData.meal_name || "").toLowerCase();
+
     if (
       lowerName.includes("kahvaltı") ||
       lowerName.includes("yumurta") ||
       lowerName.includes("omlet") ||
-      lowerName.includes("yulaf")
+      lowerName.includes("yulaf") ||
+      lowerName.includes("pancake")
     )
       return "https://images.unsplash.com/photo-1533089862017-5614a957425c?q=80&w=1974&auto=format&fit=crop";
-    if (lowerName.includes("salata") || lowerName.includes("salad"))
-      return "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=2070&auto=format&fit=crop";
-    if (lowerName.includes("tavuk") || lowerName.includes("chicken"))
-      return "https://images.unsplash.com/photo-1532550907401-a500c9a57435?q=80&w=1969&auto=format&fit=crop";
-    if (lowerName.includes("balık") || lowerName.includes("somon"))
-      return "https://images.unsplash.com/photo-1467003909585-2f8a7270028d?q=80&w=1974&auto=format&fit=crop";
+
     if (
-      lowerName.includes("ara öğün") ||
-      lowerName.includes("snack") ||
-      lowerName.includes("yoğurt")
+      lowerName.includes("salata") ||
+      lowerName.includes("bowl") ||
+      lowerName.includes("avokado")
     )
-      return "https://images.unsplash.com/photo-1488477181946-6428a0291777?q=80&w=1974&auto=format&fit=crop";
-    if (lowerName.includes("makarna") || lowerName.includes("pasta"))
+      return "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=2070&auto=format&fit=crop";
+
+    if (
+      lowerName.includes("tavuk") ||
+      lowerName.includes("chicken") ||
+      lowerName.includes("hindi")
+    )
+      return "https://images.unsplash.com/photo-1532550907401-a500c9a57435?q=80&w=1969&auto=format&fit=crop";
+
+    if (
+      lowerName.includes("balık") ||
+      lowerName.includes("somon") ||
+      lowerName.includes("ton")
+    )
+      return "https://images.unsplash.com/photo-1467003909585-2f8a7270028d?q=80&w=1974&auto=format&fit=crop";
+
+    if (
+      lowerName.includes("et") ||
+      lowerName.includes("bonfile") ||
+      lowerName.includes("kıyma") ||
+      lowerName.includes("köfte") ||
+      lowerName.includes("kebap")
+    )
+      return "https://images.unsplash.com/photo-1603048297172-c92544798d5e?q=80&w=2070&auto=format&fit=crop";
+
+    if (
+      lowerName.includes("makarna") ||
+      lowerName.includes("pasta") ||
+      lowerName.includes("spagetti")
+    )
       return "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?q=80&w=2070&auto=format&fit=crop";
 
+    if (
+      lowerName.includes("pilav") ||
+      lowerName.includes("pirinç") ||
+      lowerName.includes("bulgur")
+    )
+      return "https://images.unsplash.com/photo-1536304993881-ffc0212a04f9?q=80&w=1974&auto=format&fit=crop";
+
+    if (
+      lowerName.includes("yoğurt") ||
+      lowerName.includes("meyve") ||
+      lowerName.includes("ara öğün") ||
+      lowerName.includes("kuruyemiş") ||
+      lowerName.includes("smoothie")
+    )
+      return "https://images.unsplash.com/photo-1488477181946-6428a0291777?q=80&w=1974&auto=format&fit=crop";
+
+    // Hiçbiri tutmazsa varsayılan güzel bir yemek resmi
     return "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=2080&auto=format&fit=crop";
   };
 
@@ -60,14 +109,43 @@ const NutritionScreen = () => {
         let planData = [];
 
         if (data.nutritionPlan && data.nutritionPlan.planData) {
-          planData =
-            typeof data.nutritionPlan.planData === "string"
-              ? JSON.parse(data.nutritionPlan.planData)
-              : data.nutritionPlan.planData;
+          const rawData = data.nutritionPlan.planData;
+
+          // Güvenli JSON Parse İşlemi
+          if (typeof rawData === "string") {
+            try {
+              planData = JSON.parse(rawData);
+            } catch (e) {
+              console.error("JSON Hatası:", e);
+              planData = [];
+            }
+          } else if (typeof rawData === "object") {
+            planData = rawData;
+          }
+
+          // Yapı Kontrolü (Nested mi Düz mü?)
+          if (
+            !Array.isArray(planData) &&
+            planData.diet_plan &&
+            Array.isArray(planData.diet_plan)
+          ) {
+            planData = planData.diet_plan;
+          }
+
+          // Son çare: Array değilse array içine al
+          if (!Array.isArray(planData)) {
+            if (planData && typeof planData === "object") {
+              planData = [planData];
+            } else {
+              planData = [];
+            }
+          }
         }
+
         setDietPlan(planData);
       } catch (err) {
-        console.error("Hata:", err);
+        console.error("API Hatası:", err);
+        setDietPlan([]);
       } finally {
         setLoading(false);
       }
@@ -75,60 +153,96 @@ const NutritionScreen = () => {
     fetchData();
   }, []);
 
-  // --- SEÇİLİ GÜNÜN VERİSİNİ BUL (KRİTİK DÜZELTME BURADA) ---
-  // --- SEÇİLİ GÜNÜN VERİSİNİ BUL (GÜNCELLENDİ) ---
+  // --- GÜN FİLTRELEME (Pazar/Pazartesi Çakışması Fixli) ---
   const currentDayData = useMemo(() => {
     if (!dietPlan || !Array.isArray(dietPlan) || dietPlan.length === 0)
       return null;
 
-    // Aktif günün indeksini bul (Pazartesi=0, Salı=1...)
+    // Aktif gün
     const dayIndex = daysMap.findIndex((d) => d.en === activeDay);
     const dayObj = daysMap[dayIndex];
-    const trName = dayObj ? dayObj.tr : ""; // "Pazartesi"
+    const trName = dayObj ? dayObj.tr : "Pazartesi";
 
-    // Verideki "1. Gün", "2. Gün" formatını oluştur
+    // Olası İsimler
     const genericDayName = `${dayIndex + 1}. Gün`;
 
-    // Hem Türkçe isme (Pazartesi) hem de Sayısal isme (1. Gün) göre filtrele
-    const dayMealsRaw = dietPlan.filter((item) => {
-      // Gelen veri bazen "1. Gün" bazen "1.Gün" olabilir, boşlukları temizleyerek kontrol edelim
-      const cleanGun = item.gun ? item.gun.replace(/\s/g, "") : "";
-      const cleanGeneric = genericDayName.replace(/\s/g, "");
+    let foundMeals = [];
 
+    // 1. Nested Yapı Kontrolü (recipes_cards)
+    const dayObject = dietPlan.find((item) => {
+      const dName = (item.day || item.gun || "").toString().trim();
+
+      // Pazar İstisnası
+      if (trName === "Pazar") {
+        return (
+          dName === "Pazar" ||
+          (dName.includes("Pazar") && !dName.includes("Pazartesi")) ||
+          dName === genericDayName
+        );
+      }
       return (
-        item.gun === trName ||
-        cleanGun === cleanGeneric ||
-        item.gun.includes(trName)
+        dName === trName || dName.includes(trName) || dName === genericDayName
       );
     });
 
-    if (dayMealsRaw.length === 0) return null;
+    if (dayObject && Array.isArray(dayObject.recipes_cards)) {
+      foundMeals = dayObject.recipes_cards;
+    }
+    // 2. Düz Liste Kontrolü
+    else {
+      foundMeals = dietPlan.filter((item) => {
+        const dName = (item.day || item.gun || "").toString().trim();
 
-    // Formatlama (Aynen devam)
-    const formattedMeals = dayMealsRaw.map((m) => {
+        if (trName === "Pazar") {
+          return (
+            dName === "Pazar" ||
+            (dName.includes("Pazar") && !dName.includes("Pazartesi")) ||
+            dName === genericDayName
+          );
+        }
+        return (
+          dName === trName || dName.includes(trName) || dName === genericDayName
+        );
+      });
+    }
+
+    if (!foundMeals || foundMeals.length === 0) return null;
+
+    // Veriyi Standartlaştır
+    const formattedMeals = foundMeals.map((m) => {
       let calVal = 0;
-      // Kalori "Kcal 350" gibi gelmiş, sadece sayıyı alalım
-      if (typeof m.calories === "string") {
-        calVal = parseInt(m.calories.replace(/\D/g, "")) || 0;
-      } else {
-        calVal = m.calories || 0;
+      if (m.calories) {
+        if (typeof m.calories === "string") {
+          calVal = parseInt(m.calories.replace(/\D/g, "")) || 0;
+        } else {
+          calVal = m.calories;
+        }
       }
 
+      // Malzeme listesini bul
+      let itemsList = [];
+      if (Array.isArray(m.items)) itemsList = m.items;
+      else if (Array.isArray(m.ingredients)) itemsList = m.ingredients;
+      else if (m.recipe) itemsList = m.recipe.split(",").map((i) => i.trim());
+      else itemsList = [`${m.category || "Sağlıklı Öğün"}`];
+
       return {
-        meal_name: m.name,
+        meal_name: m.name || m.meal_name || "İsimsiz Öğün",
         calories: calVal,
         protein: m.protein || 0,
-        carbs: m.carbs || 0,
+        carbs: m.carb || m.carbs || 0,
         fat: m.fat || 0,
-        // Malzeme listesi yoksa kategori adını yaz
-        items: m.items || m.ingredients || [`${m.category || "Öğün"}`],
+        items: itemsList,
+        instructions: m.instructions || "Tarif adımı bulunmuyor.",
+        prep_time: m.prep_time,
+        image: m.image, // Eğer backend'den gelirse buraya alıyoruz
       };
     });
 
     return { meals: formattedMeals };
   }, [dietPlan, activeDay]);
 
-  // Gün değişince listenin ilk yemeğini otomatik seç
+  // İlk yemeği seç
   useEffect(() => {
     if (currentDayData?.meals?.length > 0) {
       setSelectedMeal(currentDayData.meals[0]);
@@ -137,6 +251,7 @@ const NutritionScreen = () => {
     }
   }, [currentDayData]);
 
+  // --- RENDER ---
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center bg-background-light dark:bg-background-dark">
@@ -145,8 +260,8 @@ const NutritionScreen = () => {
     );
   }
 
-  // Eğer plan yoksa
-  if (!dietPlan || dietPlan.length === 0) {
+  // Plan Yoksa
+  if (!dietPlan || !Array.isArray(dietPlan) || dietPlan.length === 0) {
     return (
       <div className="flex flex-col h-screen items-center justify-center bg-background-light dark:bg-background-dark gap-4">
         <h2 className="text-xl font-bold text-text-light dark:text-text-dark">
@@ -167,7 +282,7 @@ const NutritionScreen = () => {
       <div className="layout-container flex h-full grow flex-col">
         <main className="flex-1">
           <div className="flex flex-col md:flex-row h-full">
-            {/* --- SIDEBAR (Günler) --- */}
+            {/* --- SIDEBAR --- */}
             <aside className="w-full md:w-64 border-b md:border-b-0 md:border-r border-solid border-border-light dark:border-border-dark p-4 md:p-6 bg-background-light dark:bg-background-dark">
               <div className="flex flex-col gap-4">
                 <div className="flex flex-col">
@@ -222,25 +337,34 @@ const NutritionScreen = () => {
               </div>
             </aside>
 
-            {/* --- ANA İÇERİK --- */}
+            {/* --- İÇERİK --- */}
             <div className="flex-1 grid grid-cols-1 xl:grid-cols-3">
-              {/* SOL KOLON: Yemek Listesi */}
+              {/* LİSTE */}
               <section className="xl:col-span-1 p-4 md:p-6 border-b xl:border-b-0 xl:border-r border-solid border-border-light dark:border-border-dark overflow-y-auto max-h-[calc(100vh-80px)]">
                 <h2 className="text-text-light dark:text-text-dark text-xl md:text-[22px] font-bold leading-tight tracking-[-0.015em] pb-4">
                   {daysMap.find((d) => d.en === activeDay)?.tr} Öğünleri
                 </h2>
 
                 {!currentDayData ? (
-                  <div className="p-4 text-center text-subtle-light">
-                    Bugün için plan bulunamadı.
+                  <div className="flex flex-col items-center justify-center p-8 text-center h-64 border-2 border-dashed border-border-light dark:border-border-dark rounded-xl">
+                    <span className="material-symbols-outlined text-4xl text-subtle-light mb-2">
+                      no_meals
+                    </span>
+                    <p className="text-text-light dark:text-text-dark font-medium">
+                      Bu gün için plan bulunamadı.
+                    </p>
+                    <p className="text-xs text-subtle-light mt-1">
+                      Sadece planlanan günler doludur.
+                    </p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 gap-4">
-                    {currentDayData.meals.map((meal, idx) => {
+                    {currentDayData.meals?.map((meal, idx) => {
                       const isActive =
                         selectedMeal &&
                         selectedMeal.meal_name === meal.meal_name;
-                      const mealImg = getMealImage(meal.meal_name);
+                      // BURASI KRİTİK: Resmi buradan çekiyoruz
+                      const mealImg = getMealImage(meal);
 
                       return (
                         <div
@@ -260,9 +384,16 @@ const NutritionScreen = () => {
                             <p className="text-text-light dark:text-text-dark text-base font-medium leading-normal">
                               {meal.meal_name}
                             </p>
-                            <p className="text-subtle-light dark:text-subtle-dark text-sm font-normal leading-normal">
-                              {meal.calories} kcal
-                            </p>
+                            <div className="flex items-center gap-2 mt-1">
+                              <span className="text-subtle-light dark:text-subtle-dark text-sm font-normal">
+                                {meal.calories} kcal
+                              </span>
+                              {meal.prep_time && (
+                                <span className="text-xs bg-gray-100 dark:bg-white/10 px-1.5 py-0.5 rounded text-gray-500 dark:text-gray-400">
+                                  {meal.prep_time} dk
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
                       );
@@ -271,7 +402,7 @@ const NutritionScreen = () => {
                 )}
               </section>
 
-              {/* SAĞ KOLON: Yemek Detayı */}
+              {/* DETAY */}
               <section className="xl:col-span-2 p-4 md:p-6 overflow-y-auto max-h-[calc(100vh-80px)]">
                 {selectedMeal ? (
                   <div className="flex flex-col gap-6">
@@ -279,19 +410,17 @@ const NutritionScreen = () => {
                     <div
                       className="w-full bg-center bg-no-repeat bg-cover flex flex-col justify-end overflow-hidden rounded-xl min-h-64 md:min-h-80 shadow-lg"
                       style={{
-                        backgroundImage: `url("${getMealImage(
-                          selectedMeal.meal_name
-                        )}")`,
+                        // BURASI KRİTİK: Seçili yemeğin resmini de aynı fonksiyondan çekiyoruz
+                        backgroundImage: `url("${getMealImage(selectedMeal)}")`,
                       }}
                     ></div>
 
-                    {/* Title & Stats */}
+                    {/* Stats */}
                     <div className="flex flex-col gap-4">
                       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                         <h2 className="text-text-light dark:text-text-dark text-2xl md:text-3xl font-bold leading-tight tracking-tight">
                           {selectedMeal.meal_name}
                         </h2>
-                        {/* Butonlar */}
                         <div className="flex items-center gap-2">
                           <button className="flex items-center justify-center gap-2 px-4 h-10 rounded-lg bg-primary/20 text-text-light dark:text-text-dark text-sm font-medium hover:bg-primary/30 transition-colors">
                             <span className="material-symbols-outlined text-base">
@@ -304,17 +433,17 @@ const NutritionScreen = () => {
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-4 text-subtle-light dark:text-subtle-dark">
+                      <div className="flex items-center gap-4 text-subtle-light dark:text-subtle-dark flex-wrap">
                         <div className="flex items-center gap-1.5">
-                          <span className="material-symbols-outlined text-lg">
+                          <span className="material-symbols-outlined text-lg text-orange-500">
                             local_fire_department
                           </span>
-                          <span className="text-sm">
+                          <span className="text-sm font-bold">
                             {selectedMeal.calories} kcal
                           </span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                          <span className="material-symbols-outlined text-lg">
+                          <span className="material-symbols-outlined text-lg text-blue-500">
                             egg_alt
                           </span>
                           <span className="text-sm">
@@ -322,7 +451,7 @@ const NutritionScreen = () => {
                           </span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                          <span className="material-symbols-outlined text-lg">
+                          <span className="material-symbols-outlined text-lg text-green-500">
                             bakery_dining
                           </span>
                           <span className="text-sm">
@@ -330,45 +459,49 @@ const NutritionScreen = () => {
                           </span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                          <span className="material-symbols-outlined text-lg">
+                          <span className="material-symbols-outlined text-lg text-yellow-500">
                             opacity
                           </span>
                           <span className="text-sm">
                             Yağ: {selectedMeal.fat}g
                           </span>
                         </div>
+                        {selectedMeal.prep_time && (
+                          <div className="flex items-center gap-1.5">
+                            <span className="material-symbols-outlined text-lg text-gray-400">
+                              timer
+                            </span>
+                            <span className="text-sm">
+                              {selectedMeal.prep_time} dk
+                            </span>
+                          </div>
+                        )}
                       </div>
                     </div>
 
                     {/* Tabs */}
                     <div className="flex flex-col gap-4">
                       <div className="flex border-b border-border-light dark:border-border-dark overflow-x-auto">
-                        {["Ingredients", "Instructions", "Nutrition"].map(
-                          (tab) => {
-                            const tabTR =
-                              tab === "Ingredients"
-                                ? "İçindekiler"
-                                : tab === "Instructions"
-                                ? "Tarif"
-                                : "Besin Değeri";
-                            return (
-                              <button
-                                key={tab}
-                                onClick={() => setActiveTab(tab)}
-                                className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 whitespace-nowrap ${
-                                  activeTab === tab
-                                    ? "text-primary border-primary"
-                                    : "text-subtle-light dark:text-subtle-dark border-transparent hover:text-text-light dark:hover:text-text-dark"
-                                }`}
-                              >
-                                {tabTR}
-                              </button>
-                            );
-                          }
-                        )}
+                        {["Ingredients", "Instructions"].map((tab) => {
+                          const tabTR =
+                            tab === "Ingredients" ? "İçindekiler" : "Tarif";
+                          return (
+                            <button
+                              key={tab}
+                              onClick={() => setActiveTab(tab)}
+                              className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 whitespace-nowrap ${
+                                activeTab === tab
+                                  ? "text-primary border-primary"
+                                  : "text-subtle-light dark:text-subtle-dark border-transparent hover:text-text-light dark:hover:text-text-dark"
+                              }`}
+                            >
+                              {tabTR}
+                            </button>
+                          );
+                        })}
                       </div>
 
-                      {/* Ingredients Tab Content */}
+                      {/* Ingredients Tab */}
                       {activeTab === "Ingredients" && (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4 text-sm text-text-light dark:text-text-dark/90 animate-fade-in">
                           {Array.isArray(selectedMeal.items) ? (
@@ -391,32 +524,23 @@ const NutritionScreen = () => {
                               </div>
                             ))
                           ) : (
-                            <p>{selectedMeal.items}</p>
+                            <p>
+                              {selectedMeal.items ||
+                                "Malzeme bilgisi girilmemiş."}
+                            </p>
                           )}
                         </div>
                       )}
 
-                      {/* Instructions Tab Content */}
+                      {/* Instructions Tab */}
                       {activeTab === "Instructions" && (
-                        <div className="text-subtle-light dark:text-subtle-dark text-sm animate-fade-in">
+                        <div className="text-subtle-light dark:text-subtle-dark text-sm animate-fade-in leading-relaxed">
                           <p className="p-4 bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark rounded-lg">
                             <span className="material-symbols-outlined align-middle mr-2 text-primary">
                               info
                             </span>
-                            Bu yemek için özel bir tarif adımı bulunmuyor.
-                            Malzemeleri yukarıdaki listeye göre hazırlayıp,
-                            genel pişirme yöntemlerini (haşlama, ızgara vb.)
-                            kullanarak tüketebilirsin.
-                          </p>
-                        </div>
-                      )}
-
-                      {/* Nutrition Tab Content (Extra) */}
-                      {activeTab === "Nutrition" && (
-                        <div className="text-subtle-light dark:text-subtle-dark text-sm animate-fade-in">
-                          <p>
-                            Protein: {selectedMeal.protein}g | Karbonhidrat:{" "}
-                            {selectedMeal.carbs}g | Yağ: {selectedMeal.fat}g
+                            {selectedMeal.instructions ||
+                              "Bu yemek için özel bir tarif adımı bulunmuyor."}
                           </p>
                         </div>
                       )}
@@ -427,7 +551,11 @@ const NutritionScreen = () => {
                     <span className="material-symbols-outlined text-6xl mb-4 opacity-50">
                       restaurant_menu
                     </span>
-                    <p>Detayları görmek için soldan bir yemek seç.</p>
+                    <p>
+                      {currentDayData
+                        ? "Detayları görmek için soldan bir yemek seç."
+                        : "Bu gün için görüntülenecek öğün yok."}
+                    </p>
                   </div>
                 )}
               </section>
