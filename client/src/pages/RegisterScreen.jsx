@@ -196,14 +196,16 @@ const RegisterScreen = () => {
                       Kayıt olarak, {" "}
                       <Link
                         className="font-medium text-primary underline hover:text-green-600 transition-colors"
-                        to="/terms"
+                        to="/terms-of-service"
+                        target="_blank"
                       >
                         Hizmet Şartları
                       </Link>{" "}
                       ve{" "}
                       <Link
                         className="font-medium text-primary underline hover:text-green-600 transition-colors"
-                        to="/privacy"
+                        to="/privacy-policy"
+                        target="_blank"
                       >
                         Gizlilik Politikası
                       </Link>

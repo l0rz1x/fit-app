@@ -73,15 +73,6 @@ router.post("/", validateToken, async (req, res) => {
         isActive: true,
       });
     }
-    await ChatLog.create({ userId, sender: "user", message: message });
-
-    if (aiResult.chat_message) {
-      await ChatLog.create({
-        userId,
-        sender: "ai",
-        message: aiResult.chat_message,
-      });
-    }
 
     const nutritionMessage = `Ben ${age} yaşında,
       ${weight}kg ağırlığında,

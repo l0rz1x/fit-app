@@ -341,7 +341,7 @@ export default function Dashboard() {
                     <button
                       key={day}
                       onClick={() => setSelectedDay(day)}
-                      className={`px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-colors ${
+                      className={`px-4 py-2 rounded-lg cursor-pointer font-medium text-sm whitespace-nowrap transition-colors ${
                         selectedDay === day
                           ? "bg-primary text-white"
                           : "bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/20"
@@ -383,7 +383,7 @@ export default function Dashboard() {
                               <input
                                 checked={checkedMeals[idx] || false}
                                 onChange={() => handleMealCheck(idx, calVal)}
-                                className="h-6 w-6 rounded border-border-light dark:border-border-dark border-2 bg-transparent text-primary checked:bg-primary checked:border-primary checked:bg-[image:var(--checkbox-tick-svg)] focus:ring-0 focus:ring-offset-0 transition-all duration-200"
+                                className="h-6 w-6 rounded cursor-pointer border-border-light dark:border-border-dark border-2 bg-transparent text-primary checked:bg-primary checked:border-primary checked:bg-[image:var(--checkbox-tick-svg)] focus:ring-0 focus:ring-offset-0 transition-all duration-200"
                                 type="checkbox"
                               />
                               <div className="flex items-center gap-4">
@@ -522,7 +522,7 @@ export default function Dashboard() {
                           <button
                             key={idx}
                             onClick={() => setWaterGlasses(idx + 1)}
-                            className={`flex flex-col items-center justify-center p-3 rounded-lg transition-all ${
+                            className={`flex flex-col cursor-pointer items-center justify-center p-3 rounded-lg transition-all ${
                               idx < waterGlasses
                                 ? "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
                                 : "bg-gray-100 dark:bg-gray-800 text-gray-400 hover:bg-gray-200"
@@ -537,7 +537,7 @@ export default function Dashboard() {
                       </div>
                       <button
                         onClick={() => setWaterGlasses(0)}
-                        className="mt-2 px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                        className="mt-2 px-4 py-2 cursor-pointer text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
                       >
                         Sıfırla
                       </button>

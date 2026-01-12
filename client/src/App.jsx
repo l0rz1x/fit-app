@@ -17,6 +17,8 @@ import NotFound from "./pages/NotFound"; // 404 sayfasi
 import Assistant from "./pages/Assistant"; // Yapay zeka asistan sayfası
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import Privacy from "./pages/Privacy"; 
+import Terms from "./pages/Terms";
 
 function App() {
   // --- TEMA AYARLARI ---
@@ -59,6 +61,8 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/privacy-policy" element={<Privacy />} />
+            <Route path="/terms-of-service" element={<Terms />} />
 
             {/* Korumalı Rotalar (Giriş yaptıktan sonra gidilenler) */}
             <Route path="/workout" element={<Workout />} />

@@ -161,10 +161,10 @@ const WorkoutScreen = () => {
               <button
                 key={day.full}
                 onClick={() => setActiveDay(day.full)}
-                className={`relative flex flex-col items-center justify-center rounded-2xl transition-all duration-300 border ease-out shrink-0 ${
+                className={`relative flex flex-col cursor-pointer items-center justify-center rounded-2xl transition-all duration-300 border ease-out shrink-0 ${
                   isActive
                     ? "w-30 h-14 bg-emerald-500 border-emerald-500 text-white shadow-xl shadow-emerald-500/30 -translate-y-1"
-                    : "w-26 h-12 bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700 text-gray-400 dark:text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-750"
+                    : "w-26 h-12 bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700 text-gray-400 dark:text-gray-500 hover:bg-black/5 dark:hover:bg-white/5"
                 }`}
               >
                 <span

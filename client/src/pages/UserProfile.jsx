@@ -415,7 +415,7 @@ export default function UserProfile() {
                   {currentStep > 1 && (
                     <button
                       onClick={handlePrevStep}
-                      className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white font-bold px-4 py-3 rounded-xl transition-colors"
+                      className="flex items-center cursor-pointer gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white font-bold px-4 py-3 rounded-xl transition-colors"
                     >
                       <span className="material-symbols-outlined">
                         arrow_back
@@ -430,7 +430,7 @@ export default function UserProfile() {
                   {currentStep < 3 ? (
                     <button
                       onClick={handleNextStep}
-                      className="flex items-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold px-8 py-4 rounded-xl hover:opacity-90 transition-all shadow-lg active:scale-95"
+                      className="flex items-center cursor-pointer gap-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold px-8 py-4 rounded-xl hover:opacity-90 transition-all shadow-lg active:scale-95"
                     >
                       Devam Et
                       <span className="material-symbols-outlined">
@@ -441,7 +441,7 @@ export default function UserProfile() {
                     <button
                       onClick={handleSubmit}
                       disabled={isLoading}
-                      className="flex items-center gap-2 bg-primary text-white font-bold px-8 py-4 rounded-xl hover:bg-primary-hover transition-all shadow-lg shadow-primary/30 active:scale-95 disabled:opacity-50"
+                      className="flex items-center cursor-pointer gap-2 bg-primary text-white font-bold px-8 py-4 rounded-xl hover:bg-primary-hover transition-all shadow-lg shadow-primary/30 active:scale-95 disabled:opacity-50"
                     >
                       {isLoading ? "Kaydediliyor..." : "Planımı Oluştur"}
                       {!isLoading && (

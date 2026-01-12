@@ -113,16 +113,16 @@ export default function Header({ theme, toggleTheme }) {
               className="flex items-center justify-center size-10 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-yellow-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all ml-2"
             >
               {theme === "light" ? (
-                <span className="material-symbols-outlined">dark_mode</span>
+                <span className="material-symbols-outlined cursor-pointer">dark_mode</span>
               ) : (
-                <span className="material-symbols-outlined">light_mode</span>
+                <span className="material-symbols-outlined cursor-pointer">light_mode</span>
               )}
             </button>
 
             {/* ÇIKIŞ BUTONU */}
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 bg-red-500/10 text-red-600 dark:text-red-400 ml-3 px-4 py-2 rounded-lg text-sm font-bold hover:bg-red-500 hover:text-white transition-all"
+              className="flex items-center cursor-pointer gap-2 bg-red-500/10 text-red-600 dark:text-red-400 ml-3 px-4 py-2 rounded-lg text-sm font-bold hover:bg-red-500 hover:text-white transition-all"
             >
               <span className="material-symbols-outlined text-lg">logout</span>
               Çıkış
@@ -145,9 +145,9 @@ export default function Header({ theme, toggleTheme }) {
               className="flex items-center justify-center size-10 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-yellow-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all"
             >
               {theme === "light" ? (
-                <span className="material-symbols-outlined">dark_mode</span>
+                <span className="material-symbols-outlined cursor-pointer">dark_mode</span>
               ) : (
-                <span className="material-symbols-outlined">light_mode</span>
+                <span className="material-symbols-outlined cursor-pointer">light_mode</span>
               )}
             </button>
 

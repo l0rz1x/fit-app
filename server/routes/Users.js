@@ -135,6 +135,45 @@ router.post("/reset-password", async (req, res) => {
   }
 });
 
+router.post("/contact", async (req, res) => {
+  const { fullName, email, subject, message } = req.body;
+
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "fitnutrition787@gmail.com",
+        pass: "akem snik tabq zamv",
+      },
+    });
+
+    const mailOptions = {
+      from: "fitnutrition787@gmail.com",
+      to: "fitnutrition787@gmail.com",
+      replyTo: email,
+      subject: `İletişim Formu: ${subject} - ${fullName}`,
+      html: `
+                <h3>Yeni İletişim Mesajı</h3>
+                <p><strong>Gönderen:</strong> ${fullName}</p>
+                <p><strong>E-posta:</strong> ${email}</p>
+                <p><strong>Konu:</strong> ${subject}</p>
+                <br>
+                <p><strong>Mesaj:</strong></p>
+                <p>${message}</p>
+            `,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res
+      .status(200)
+      .json({ success: true, message: "Mail başarıyla gönderildi." });
+  } catch (error) {
+    console.error("Mail gönderme hatası:", error);
+    res.status(500).json({ success: false, message: "Mail gönderilemedi." });
+  }
+});
+
 router.get("/check", validateToken, (req, res) => {
   res.json(req.user);
 });

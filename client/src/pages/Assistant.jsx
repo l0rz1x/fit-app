@@ -265,7 +265,7 @@ export default function Assistant() {
             </p>
             <button
               onClick={() => setActiveTab("nutrition")}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg w-full text-left transition-all ${
+              className={`flex items-center cursor-pointer gap-3 px-3 py-2.5 rounded-lg w-full text-left transition-all ${
                 activeTab === "nutrition"
                   ? "bg-primary/10 text-primary font-bold ring-1 ring-primary/20"
                   : "hover:bg-black/5 dark:hover:bg-white/5 text-text-light dark:text-text-dark"
@@ -283,7 +283,7 @@ export default function Assistant() {
 
             <button
               onClick={() => setActiveTab("fitness")}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg w-full text-left transition-all ${
+              className={`flex items-center cursor-pointer gap-3 px-3 py-2.5 rounded-lg w-full text-left transition-all ${
                 activeTab === "fitness"
                   ? "bg-orange-500/10 text-orange-500 font-bold ring-1 ring-orange-500/20"
                   : "hover:bg-black/5 dark:hover:bg-white/5 text-text-light dark:text-text-dark"
@@ -307,19 +307,19 @@ export default function Assistant() {
             </p>
             <button
               onClick={() => navigate("/mealplan")}
-              className="px-3 py-2 text-sm text-text-light dark:text-text-dark hover:text-primary hover:bg-black/5 dark:hover:bg-white/5 rounded-md transition-colors text-left"
+              className="px-3 py-2 text-sm cursor-pointer text-text-light dark:text-text-dark hover:text-primary hover:bg-black/5 dark:hover:bg-white/5 rounded-md transition-colors text-left"
             >
               🥗 Beslenme Planım
             </button>
             <button
               onClick={() => navigate("/workout")}
-              className="px-3 py-2 text-sm text-text-light dark:text-text-dark hover:text-orange-500 hover:bg-black/5 dark:hover:bg-white/5 rounded-md transition-colors text-left"
+              className="px-3 py-2 text-sm cursor-pointer text-text-light dark:text-text-dark hover:text-orange-500 hover:bg-black/5 dark:hover:bg-white/5 rounded-md transition-colors text-left"
             >
               💪 Antrenman Programım
             </button>
             <button
               onClick={() => navigate("/dashboard")}
-              className="px-3 py-2 text-sm text-text-light dark:text-text-dark hover:text-blue-500 hover:bg-black/5 dark:hover:bg-white/5 rounded-md transition-colors text-left"
+              className="px-3 py-2 text-sm cursor-pointer text-text-light dark:text-text-dark hover:text-blue-500 hover:bg-black/5 dark:hover:bg-white/5 rounded-md transition-colors text-left"
             >
               📊 Genel Durum (Dashboard)
             </button>
@@ -543,7 +543,7 @@ export default function Assistant() {
                     onClick={() =>
                       setInputMessage("Yüksek proteinli kahvaltı öner")
                     }
-                    className="px-3 py-1.5 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-colors whitespace-nowrap"
+                    className="px-3 py-1.5 cursor-pointer rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-colors whitespace-nowrap"
                   >
                     🥞 Protein Kahvaltı
                   </button>
@@ -551,7 +551,7 @@ export default function Assistant() {
                     onClick={() =>
                       setInputMessage("Bana 2 günlük diyet listesi hazırla")
                     }
-                    className="px-3 py-1.5 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-colors whitespace-nowrap"
+                    className="px-3 py-1.5 cursor-pointer rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-colors whitespace-nowrap"
                   >
                     📅 Plan Oluştur
                   </button>
@@ -560,7 +560,7 @@ export default function Assistant() {
                 <>
                   <button
                     onClick={() => setInputMessage("30 dk HIIT antrenmanı")}
-                    className="px-3 py-1.5 rounded-full text-xs font-medium bg-orange-500/10 text-orange-600 border border-orange-500/20 hover:bg-orange-500/20 transition-colors whitespace-nowrap"
+                    className="px-3 py-1.5 cursor-pointer rounded-full text-xs font-medium bg-orange-500/10 text-orange-600 border border-orange-500/20 hover:bg-orange-500/20 transition-colors whitespace-nowrap"
                   >
                     🔥 HIIT
                   </button>
@@ -568,7 +568,7 @@ export default function Assistant() {
                     onClick={() =>
                       setInputMessage("Sırt ağrısı için egzersizler")
                     }
-                    className="px-3 py-1.5 rounded-full text-xs font-medium bg-orange-500/10 text-orange-600 border border-orange-500/20 hover:bg-orange-500/20 transition-colors whitespace-nowrap"
+                    className="px-3 py-1.5 cursor-pointer rounded-full text-xs font-medium bg-orange-500/10 text-orange-600 border border-orange-500/20 hover:bg-orange-500/20 transition-colors whitespace-nowrap"
                   >
                     🧘‍♂️ Esneme
                   </button>
@@ -598,7 +598,7 @@ export default function Assistant() {
                       !inputMessage.trim()
                         ? "bg-gray-300 dark:bg-gray-700"
                         : activeTab === "nutrition"
-                        ? "bg-primary hover:bg-primary-hover"
+                        ? "bg-primary hover:bg-primary-hover cursor-pointer"
                         : "bg-orange-500 hover:bg-orange-600"
                     }`}
                 >
