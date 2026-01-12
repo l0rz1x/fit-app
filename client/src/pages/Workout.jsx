@@ -31,7 +31,16 @@ const footerVariants = {
 
 const WorkoutScreen = () => {
   const navigate = useNavigate();
-  const [activeDay, setActiveDay] = useState("Monday");
+
+  // --- DEĞİŞİKLİK BURADA: OTOMATİK GÜN SEÇİMİ ---
+  const [activeDay, setActiveDay] = useState(() => {
+    const todayIndex = new Date().getDay(); // 0=Pazar, 1=Pazartesi...
+    // Javascript'te haftanın günleri Pazar(0) ile başlar.
+    // Senin 'days' yapın ile uyumlu olması için İngilizce isimleri eşleştiriyoruz.
+    const daysEnglish = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    return daysEnglish[todayIndex];
+  });
+
   const [workoutPlan, setWorkoutPlan] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -87,8 +96,7 @@ const WorkoutScreen = () => {
       workoutPlan.find((item) => {
         if (!item.day) return false;
 
-        // --- DÜZELTME BURADA ---
-        // Eğer aradığımız gün "Pazar" ise, ama gelen veri "Pazartesi" ise bunu eşleştirme!
+        // Pazar/Pazartesi çakışma kontrolü
         if (targetDayTR === "Pazar") {
           return item.day.includes("Pazar") && !item.day.includes("Pazartesi");
         }
@@ -275,7 +283,6 @@ const WorkoutScreen = () => {
                         layout: { duration: 0.3 },
                       }}
                       onClick={() => toggleComplete(ex.exercise_name)}
-                      // DİNAMİK STİLLER BURADA DEĞİŞİYOR
                       className={`group cursor-pointer relative rounded-2xl p-4 border shadow-sm transition-all duration-500 overflow-hidden
                         ${
                           isChecked
@@ -294,7 +301,6 @@ const WorkoutScreen = () => {
                            }`}
                         >
                           {ex.gif_url ? (
-                            // Tamamlandığında görselin biraz soluklaşması ama kaybolmaması için opacity ayarı
                             <img
                               src={ex.gif_url}
                               alt={ex.exercise_name}
@@ -321,7 +327,6 @@ const WorkoutScreen = () => {
                         <div className="flex-1 flex flex-col justify-between py-0.5">
                           <div>
                             <div className="flex justify-between items-start gap-2">
-                              {/* Başlık rengi dinamik */}
                               <h3
                                 className={`font-bold text-lg leading-tight transition-colors duration-500 ${
                                   isChecked
@@ -332,7 +337,6 @@ const WorkoutScreen = () => {
                                 {ex.exercise_name}
                               </h3>
 
-                              {/* Checkbox SADECE tamamlanmamışsa görünür */}
                               <AnimatePresence>
                                 {!isChecked && (
                                   <motion.div
@@ -344,7 +348,6 @@ const WorkoutScreen = () => {
                                 )}
                               </AnimatePresence>
                             </div>
-                            {/* Hedef kas rengi dinamik */}
                             <p
                               className={`text-sm font-medium mt-1 transition-colors duration-500 ${
                                 isChecked
@@ -356,11 +359,9 @@ const WorkoutScreen = () => {
                             </p>
                           </div>
 
-                          {/* Set/Rep ve Tamamlandı Banner'ı arasında geçiş */}
                           <div className="mt-3 h-8 relative">
                             <AnimatePresence mode="wait">
                               {isChecked ? (
-                                // TAMAMLANDI BANNER'I
                                 <motion.div
                                   key="completed"
                                   variants={footerVariants}
@@ -377,7 +378,6 @@ const WorkoutScreen = () => {
                                   </span>
                                 </motion.div>
                               ) : (
-                                // SET/TEKRAR BİLGİSİ
                                 <motion.div
                                   key="info"
                                   variants={footerVariants}
@@ -411,7 +411,7 @@ const WorkoutScreen = () => {
                           </div>
                         </div>
                       </div>
-                      {/* Arkaplan Efekti (Tamamlandığında parama) */}
+                      {/* Arkaplan Efekti */}
                       {isChecked && (
                         <motion.div
                           initial={{ opacity: 0 }}
