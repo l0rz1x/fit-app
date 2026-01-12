@@ -235,7 +235,7 @@ const NutritionScreen = () => {
         items: itemsList,
         instructions: m.instructions || "Tarif adımı bulunmuyor.",
         prep_time: m.prep_time,
-        image: m.image, // Eğer backend'den gelirse buraya alıyoruz
+        image: m.img_url, // Eğer backend'den gelirse buraya alıyoruz
       };
     });
 
